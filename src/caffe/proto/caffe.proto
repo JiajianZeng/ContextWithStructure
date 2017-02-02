@@ -386,6 +386,8 @@ message LayerParameter {
   optional MemoryDataParameter memory_data_param = 119;
   optional MVNParameter mvn_param = 120;
   optional ParameterParameter parameter_param = 145;
+  optional PatchSemanticParameter patch_semantic_param = 1526702;
+  optional PerceptualLossParameter perceptual_loss_param = 1526701;
   optional PoolingParameter pooling_param = 121;
   optional PowerParameter power_param = 122;
   optional PReLUParameter prelu_param = 131;
@@ -403,6 +405,7 @@ message LayerParameter {
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
   optional WindowDataParameter window_data_param = 129;
+  optional YoloLossParameter yolo_loss_param = 1526700;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1398,4 +1401,65 @@ message PReLUParameter {
   optional FillerParameter filler = 1;
   // Whether or not slope parameters are shared across channels.
   optional bool channel_shared = 2 [default = false];
+}
+
+message PatchSemanticParameter {
+  // the number of landmarks
+  optional uint32 num_landmark = 1 [default = 5];
+  
+  enum CrossChannelMethod {
+    MAX = 0; 
+    AVE = 1;
+  } 
+  
+  optional CrossChannelMethod cross_channel = 2 [default = AVE];
+  // spatial operation parameter
+  repeated SpatialOperationParameter spatial_operation_param = 3;
+  optional uint32 image_w = 4;
+  optional uint32 image_h = 5;
+  optional uint32 patch_w = 6;
+  optional uint32 patch_h = 7;
+
+}
+
+message PerceptualLossParameter {
+  // The number of landmarks to be predicted
+  optional uint32 num_landmark = 1 [default = 5];
+  // sqrt(x^2 + epsilon)
+  optional float epsilon = 2 [default = 1.0];
+}
+
+message YoloLossParameter {
+  // Divides the input image into side by side grids.
+  optional uint32 side = 1 [default = 7];
+  // The number of bounding boxes predicted per grid cell.
+  optional uint32 boxes = 2 [default = 2];
+  // The number of class probabilities predicted per grid cell.
+  optional uint32 classes = 3 [default = 20];
+  // The number of coordinates per bounding boxes.
+  optional uint32 coords = 4 [default = 4];
+
+  // 
+  optional float object_scale = 5 [default = 1];
+  //
+  optional float noobject_scale = 6 [default = 0.5];
+  // 
+  optional float class_scale = 7 [default = 1];
+  // 
+  optional float coord_scale = 8 [default = 5];
+
+  // Whether or not normalize the class probabilities.
+  optional bool softmax = 9 [default = false];
+} 
+
+message SpatialOperationParameter {
+  optional uint32 kernel_size = 1; // the kernel size
+  optional uint32 kernel_w = 2; // the kernel width
+  optional uint32 kernel_h = 3; // the kernel height
+  optional uint32 stride = 4 [default = 1] ; // the stride (equal in Y, X)
+  optional uint32 stride_w = 5; // the stride width
+  optional uint32 stride_h = 6; // the stride height
+  optional string name = 7; // the name of this spatial operation
+  optional float weight = 8 [default = 1]; 
+  optional bool used = 9 [default = false];
 }

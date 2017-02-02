@@ -94,6 +94,7 @@ layer {
     weight_filler {
       type: "gaussian"
       std: 0.01
+      
     }
     bias_filler {
       type: "constant"
@@ -136,6 +137,7 @@ layer {
     weight_filler {
       type: "gaussian"
       std: 0.01
+      
     }
     bias_filler {
       type: "constant"
@@ -175,6 +177,7 @@ layer {
     weight_filler {
       type: "gaussian"
       std: 0.1
+      
     }
     bias_filler {
       type: "constant"
@@ -197,6 +200,7 @@ layer {
     weight_filler {
       type: "gaussian"
       std: 0.1
+      
     }
     bias_filler {
       type: "constant"
