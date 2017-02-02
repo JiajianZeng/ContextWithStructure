@@ -38,4 +38,6 @@ Please cite Caffe in your publications if it helps your research:
 
 ## Layers related to our landmark project
 
-There exists three layers related to our landmark project: yolo_loss_layer, perceptual_loss_layer and patch_semantic_layer. I finished the first two layers at present, both source codes under 'src/caffe/layers' directory and test codes (test whether Forward and Backward are correct) under 'src/caffe/test' directory. And the only one header file is 'deep_landmark_layers.hpp' under 'include/caffe' directory. 
+There exists three layers related to our landmark project: yolo_loss_layer, perceptual_loss_layer and patch_semantic_layer. I finished the first two layers at present (source codes for patch_semantic_layer is also finished), both source codes under 'src/caffe/layers' directory and test codes (test whether Forward and Backward are correct) under 'src/caffe/test' directory. And the only one header file is 'deep_landmark_layers.hpp' under 'include/caffe' directory. 
+
+The reference paper for yolo_loss_layer is: [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640)
