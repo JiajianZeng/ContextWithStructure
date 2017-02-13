@@ -1,7 +1,11 @@
 #include "caffe/deep_landmark_layers.hpp"
 
 namespace caffe {
- 
+
+template <typename Dtype>
+Dtype Distance_xy(Dtype x1, Dtype y1, Dtype x2, Dtype y2){
+  return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+}
 template <typename Dtype>
 Dtype GE_and_LE(Dtype x, int min, int max) {
   x = x < min ? min : x;
@@ -36,13 +40,16 @@ void best_fiducial(const pair<Dtype, Dtype>& landmark, const pair<int, int>& ima
   x2 = GE_and_LE(x2, 0, img_w);
   y1 = GE_and_LE(y1, 0, img_h);
   y2 = GE_and_LE(y2, 0, img_h);
+  //BoundingBox<Dtype> around_patch(landmark_x, landmark_y, x2 - x1, y2 - y1);
   BoundingBox<Dtype> around_patch(x1, y1, x2 - x1, y2 - y1);
   
-  int s_h = sp.AccumStrideH();
-  int s_w = sp.AccumStrideW();
-  int r_h = sp.ReceptiveFieldH();
-  int r_w = sp.ReceptiveFieldW();
+  Dtype s_h = sp.AccumStrideH();
+  Dtype s_w = sp.AccumStrideW();
+  Dtype r_h = sp.ReceptiveFieldH();
+  Dtype r_w = sp.ReceptiveFieldW();
+
   Dtype max_iou = 0;
+  Dtype mdist = 0;
   // find the receptive box that has the highest IOU with the around patch defined aforemetioned
   for (int h = 0; h < feature->height(); ++h) {
     Dtype y1 = h * s_h, y2 = h * s_h + r_h;
@@ -52,16 +59,28 @@ void best_fiducial(const pair<Dtype, Dtype>& landmark, const pair<int, int>& ima
       x2 = GE_and_LE(x2, 0, img_w);
       y1 = GE_and_LE(y1, 0, img_h);
       y2 = GE_and_LE(y2, 0, img_h);
+      //BoundingBox<Dtype> receptive_box(x1 + r_w/2, y1 + r_h/2, x2 - x1, y2 - y1);
       BoundingBox<Dtype> receptive_box(x1, y1, x2 - x1, y2 - y1);
-      Dtype iou = receptive_box.BoxIou(around_patch);
-      
+      //Dtype iou = receptive_box.BoxIou(around_patch);
+      Dtype iou = receptive_box.BoxIou_ps(around_patch);
       if (iou > max_iou) {
         fiducial.first = w;
         fiducial.second = h;
+        mdist = Distance_xy(x1+r_w/2, y1+r_h/2, landmark_x, landmark_y);
         max_iou = iou;
+      } 
+      else if(iou == max_iou){
+        if(Distance_xy(x1+r_w/2, y1+r_h/2, landmark_x, landmark_y) < mdist){
+          fiducial.first = w;
+          fiducial.second = h;
+          mdist = Distance_xy(x1+r_w/2, y1+r_h/2, landmark_x, landmark_y);
+        }
       }
+
+      
     }
   }  
+  std::cout << "w: " << fiducial.first << " h: " << fiducial.second << std::endl;
   
 }
 
@@ -166,6 +185,8 @@ void compute_fx_fy_ft(int batch, const pair<Dtype, Dtype>& gt_landmark, const pa
   int w_sign_gt = gt_right ? 1 : -1;
   int h_sign_pre = predicted_down ? 1 : -1;
   int w_sign_pre = predicted_right ? 1 : -1;
+  if(w_sign_gt != w_sign_pre && w_gt != 0 && w_pre != 0) w_sign_gt = w_sign_pre = -1;
+  if(h_sign_gt != h_sign_pre && h_gt != 0 && h_pre != 0) h_sign_gt = h_sign_pre = -1;
   *Ft = Dtype(0);
   for (int c = 0; c < feature->channels(); ++c) {  
     Dtype ft_this_channel = Dtype(0);
@@ -195,22 +216,25 @@ void PatchSemanticLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
       // while bottom[1] stores the landmark shift w.r.t the current landmark shape
       pair<Dtype, Dtype> gt_landmark(bottom[0]->data_at(b, l, 0, 0),
                                      bottom[0]->data_at(b, l, 1, 0));
-      pair<Dtype, Dtype> pre_landmark(bottom[0]->data_at(b, l, 0, 0) + bottom[1]->data_at(b, l, 0, 0),
-                                      bottom[0]->data_at(b, l, 1, 0) + bottom[1]->data_at(b, l, 1, 0));
+      pair<Dtype, Dtype> pre_landmark(bottom[1]->data_at(b, l, 0, 0),
+                                      bottom[1]->data_at(b, l, 1, 0));
+      
       Dtype fx = Dtype(0), fy = Dtype(0), ft = Dtype(0);
       // compute each layer Fx, Fy and Ft
       for (int j = 0; j < index_sp_used_vec_.size(); ++j) {
         Dtype fx_this_layer, fy_this_layer, ft_this_layer;
         int sp_index = index_sp_used_vec_[j];
- 
+        
         compute_fx_fy_ft(b, gt_landmark, pre_landmark,
                          image_, patch_, 
                          bottom[j + 2], sp_vec_[sp_index],
                          &fx_this_layer, &fy_this_layer, &ft_this_layer);
+        
         fx = fx + fx_this_layer * sp_vec_[sp_index].Weight();
         fy = fy + fy_this_layer * sp_vec_[sp_index].Weight();
         ft = ft + ft_this_layer * sp_vec_[sp_index].Weight();
       }
+      //std::cout << pre_landmark.second << std::endl;
       top[0]->mutable_cpu_data()[top[0]->offset(b, l)] = fx;
       top[0]->mutable_cpu_data()[top[0]->offset(b, l, 1)] = fy;
       top[0]->mutable_cpu_data()[top[0]->offset(b, l, 2)] = ft;

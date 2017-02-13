@@ -329,7 +329,7 @@ template <typename Dtype>
 class PatchSemanticLayer : public Layer<Dtype> {
  public:
   explicit PatchSemanticLayer(const LayerParameter& param)
-      : Layer<Dtype>(param){}
+      : Layer<Dtype>(param), arr(NULL){}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                           const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
@@ -360,6 +360,7 @@ class PatchSemanticLayer : public Layer<Dtype> {
   bool cross_channel_ave_;
   vector<SpatialOperation<Dtype> > sp_vec_;
   vector<int> index_sp_used_vec_;
+  SpatialOperation<Dtype> *arr;
   pair<int, int> image_;
   pair<int, int> patch_;
   
@@ -407,6 +408,10 @@ class BoundingBox {
   Dtype BoxIou(BoundingBox& b) {
     return Intersection(b) / Union(b);
   }
+  Dtype BoxIou_ps(BoundingBox& b){
+    return Intersection_ps(b) / Union_ps(b);
+  }
+
   Dtype BoxRmse(BoundingBox& b) {
     return sqrt(pow(x_ - b.GetX(), 2) + 
                 pow(y_ - b.GetY(), 2) +
@@ -415,11 +420,21 @@ class BoundingBox {
   }
  protected:
   Dtype Overlap(Dtype x1, Dtype w1, Dtype x2, Dtype w2) {
-    Dtype l1 = x1 - w1 / 2;
-    Dtype l2 = x2 - w2 / 2;
+    Dtype l1 = x1 - w1/2;
+    Dtype l2 = x2 - w2/2;
     Dtype left = l1 > l2 ? l1 : l2;
-    Dtype r1 = x1 + w1 / 2;
-    Dtype r2 = x2 + w2 / 2;
+    Dtype r1 = x1 + w1/2;
+    Dtype r2 = x2 + w2/2;
+    Dtype right = r1 < r2 ? r1 : r2;
+    return right - left;
+  }
+
+  Dtype Overlap_ps(Dtype x1, Dtype w1, Dtype x2, Dtype w2) {
+    Dtype l1 = x1;
+    Dtype l2 = x2;
+    Dtype left = l1 > l2 ? l1 : l2;
+    Dtype r1 = x1 + w1;
+    Dtype r2 = x2 + w2;
     Dtype right = r1 < r2 ? r1 : r2;
     return right - left;
   }
@@ -430,9 +445,21 @@ class BoundingBox {
     if (w < 0 || h < 0) return 0;
     return w * h;
   }
+
+  Dtype Intersection_ps(BoundingBox& b) {
+    Dtype w = Overlap_ps(x_, w_, b.GetX(), b.GetW());
+    Dtype h = Overlap_ps(y_, h_, b.GetY(), b.GetH());
+    if (w < 0 || h < 0) return 0;
+    return w * h;
+  }
   
   Dtype Union(BoundingBox& b) {
     Dtype intersection = Intersection(b);
+    return w_ * h_ + b.GetW() * b.GetH() - intersection;
+  }
+
+  Dtype Union_ps(BoundingBox& b) {
+    Dtype intersection = Intersection_ps(b);
     return w_ * h_ + b.GetW() * b.GetH() - intersection;
   }
  Dtype x_;
