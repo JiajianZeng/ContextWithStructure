@@ -373,6 +373,7 @@ message LayerParameter {
   optional ELUParameter elu_param = 140;
   optional EmbedParameter embed_param = 137;
   optional ExpParameter exp_param = 111;
+  optional FacialLandmarkPerformanceParameter facial_landmark_performance_param = 1526703;
   optional FlattenParameter flatten_param = 135;
   optional HDF5DataParameter hdf5_data_param = 112;
   optional HDF5OutputParameter hdf5_output_param = 113;
@@ -1401,6 +1402,14 @@ message PReLUParameter {
   optional FillerParameter filler = 1;
   // Whether or not slope parameters are shared across channels.
   optional bool channel_shared = 2 [default = false];
+}
+
+message FacialLandmarkPerformanceParameter {
+  // the number of landmakrs
+  optional uint32 num_landmark = 1 [default = 5];
+  // false rate ratio
+  optional float error_threshold = 2 [default = 0.05];
+
 }
 
 message PatchSemanticParameter {
