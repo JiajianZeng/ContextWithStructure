@@ -246,7 +246,7 @@ template <typename Dtype>
 void PatchSemanticLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
                                       const vector<bool>& propagate_down,
                                       const vector<Blob<Dtype>*>& bottom) {
-  NOT_IMPLEMENTED;
+  // backward do nothing
 }
 
 INSTANTIATE_LAYER_GPU_FUNCS(PatchSemanticLayer);

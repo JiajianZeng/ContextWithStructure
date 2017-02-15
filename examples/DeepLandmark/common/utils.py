@@ -42,7 +42,7 @@ def getDataFromTxt(txt, with_landmark=True):
     dirname = os.path.dirname(txt)
     with open(txt, 'r') as fd:
         lines = fd.readlines()
-    img_size = 1
+    img_size = 227
     result = []
     for line in lines:
         line = line.strip()
@@ -89,12 +89,12 @@ def processImage(imgs):
         imgs: N x 1 x W x H
     """
     imgs = imgs.astype(np.float32)
-    m0 = np.mean(imgs[0],axis = 0)
-    s0 = np.std(imgs[0],axis = 0)
-    m1 = np.mean(imgs[1],axis = 0)
-    s1 = np.std(imgs[1],axis = 0)
-    m2 = np.mean(imgs[2],axis = 0)
-    s2 = np.std(imgs[2],axis = 0)
+    m0 = np.mean(imgs[:,0,:,:],axis = 0)
+    s0 = np.std(imgs[:,0,:,:],axis = 0)
+    m1 = np.mean(imgs[:,1,:,:],axis = 0)
+    s1 = np.std(imgs[:,1,:,:],axis = 0)
+    m2 = np.mean(imgs[:,2,:,:],axis = 0)
+    s2 = np.std(imgs[:,2,:,:],axis = 0)
     for i, img in enumerate(imgs):
         imgs[i][0] = (imgs[i][0] - m0)/s0
         imgs[i][1] = (imgs[i][1] - m1)/s1

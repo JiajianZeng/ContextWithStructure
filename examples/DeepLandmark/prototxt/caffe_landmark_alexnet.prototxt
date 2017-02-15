@@ -8,7 +8,7 @@ layer {
     type: "HDF5Data"
     top: "data"
     top: "landmark"
-    top: "eyedist"
+    #top: "eyedist"
     include {
         phase: TRAIN
     }
@@ -28,7 +28,7 @@ layer {
     }
     hdf5_data_param {
         source: "train/1_F/test.txt"
-        batch_size: 64
+        batch_size: 32
     }
 }
 
@@ -342,9 +342,8 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    # num_output: 1000
-	# 5 landmarks
-	num_output: 10 
+    # 5 landmarks
+    num_output: 10 
     weight_filler {
       type: "xavier"
     }
@@ -379,9 +378,6 @@ layer {
   bottom: "landmark"
   bottom: "lm_fc8"
   top: "euclidean_loss"
-  include {
-    phase: TRAIN
-  }
 }
 
 # Use pre-trained AlexNet (origin in image classification) to extract context information 
@@ -587,7 +583,7 @@ layer {
   bottom: "lm_fc8"
   bottom: "pool1"
   bottom: "pool2"
-  bottom: "conv4"
+  bottom: "conv4"  
   top: "partial_derivatives"
   
   patch_semantic_param {

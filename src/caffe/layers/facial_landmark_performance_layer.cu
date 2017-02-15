@@ -93,7 +93,7 @@ template <typename Dtype>
 void FacialLandmarkPerformanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
                                                          const vector<bool>& propagate_down,
                                                          const vector<Blob<Dtype>*>& bottom) {
-   NOT_IMPLEMENTED;
+   // backward do nothing
 }
 
 
