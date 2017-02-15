@@ -89,10 +89,16 @@ def processImage(imgs):
         imgs: N x 1 x W x H
     """
     imgs = imgs.astype(np.float32)
-    m = np.mean(imgs,axis = 0)
-    s = np.std(imgs,axis = 0)
+    m0 = np.mean(imgs[0],axis = 0)
+    s0 = np.std(imgs[0],axis = 0)
+    m1 = np.mean(imgs[1],axis = 0)
+    s1 = np.std(imgs[1],axis = 0)
+    m2 = np.mean(imgs[2],axis = 0)
+    s2 = np.std(imgs[2],axis = 0)
     for i, img in enumerate(imgs):
-        imgs[i] = (imgs[i] - m)/s
+        imgs[i][0] = (imgs[i][0] - m0)/s0
+        imgs[i][1] = (imgs[i][1] - m1)/s1
+        imgs[i][2] = (imgs[i][2] - m2)/s2
     return imgs
 
 def dataArgument(data):

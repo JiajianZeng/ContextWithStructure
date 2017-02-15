@@ -80,7 +80,6 @@ void best_fiducial(const pair<Dtype, Dtype>& landmark, const pair<int, int>& ima
       
     }
   }  
-  std::cout << "w: " << fiducial.first << " h: " << fiducial.second << std::endl;
   
 }
 

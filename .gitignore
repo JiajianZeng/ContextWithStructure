@@ -70,6 +70,8 @@ models/*
 *.binaryproto
 *leveldb
 *lmdb
+examples/DeepLandmark/dataset/*
+examples/DeepLandmark/train/*
 
 # build, distribute, and bins (+ python proto bindings)
 build

@@ -1,1 +1,1 @@
-~/caffe/caffe/build/tools/caffe train --solver prototxt/1_F_solver.prototxt --gpu 0
+../../build/tools/caffe train --solver prototxt/caffe_landmark_alexnet_solver.prototxt --weights prototxt/bvlc_alexnet.caffemodel --gpu 0

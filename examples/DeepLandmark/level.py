@@ -32,8 +32,8 @@ def generate_hdf5(ftxt, output, fname, argument=False):
     F_eyedist = []
   
     for (imgPath, bbox, landmarkGt, eyeDist) in data:
-        #img = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_COLOR)
-        img = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+        img = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_COLOR)
+        #img = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
         assert(img is not None)
         logger("process %s" % imgPath)
         # F
@@ -42,8 +42,8 @@ def generate_hdf5(ftxt, output, fname, argument=False):
 
         f_face = cv2.resize(f_face, (img_size, img_size))
 
-        f_face = f_face.reshape((1, img_size, img_size))
-        #f_face = f_face.reshape((3, img_size, img_size))
+        #f_face = f_face.reshape((1, img_size, img_size))
+        f_face = f_face.reshape((3, img_size, img_size))
         f_landmark = landmarkGt.reshape((10))
         F_imgs.append(f_face)
         F_landmarks.append(f_landmark)

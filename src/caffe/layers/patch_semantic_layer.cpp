@@ -38,10 +38,8 @@ void PatchSemanticLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   // and other bottom(s) are used to calculate partial derivatives 
   CHECK_EQ(bottom.size() - 2, count) 
       << "The number of blobs to calculate the three partial derivatives must equal the number of the used spatial operation.";
+  
   // following these spatial operations one by one
-  std::cout << sp_vec_[0].Weight() << std::endl;
-  std::cout << sp_vec_[1].Weight() << std::endl;
-
   for (int i = 1; i < sp_vec_.size(); ++i) {
     sp_vec_.at(i).Following(sp_vec_.at(i - 1)); 
   }

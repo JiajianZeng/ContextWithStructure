@@ -604,7 +604,7 @@ layer {
 	  kernel_size: 11
 	  stride: 4
 	  weight: 0
-	  used: False
+	  used: false
 	}
         # sp param of layer pool1	
 	spatial_operation_param {
@@ -612,7 +612,7 @@ layer {
 	  kernel_size: 3
 	  stride: 2
 	  weight: 1
-	  used: True
+	  used: true
 	}
 	# sp param of layer conv2
 	spatial_operation_param {
@@ -620,7 +620,7 @@ layer {
 	  kernel_size: 5
 	  stride: 1
 	  weight: 0
-	  used: False
+	  used: false
 	}
 	# sp param of layer pool2
 	spatial_operation_param {
@@ -628,7 +628,7 @@ layer {
 	  kernel_size: 3
 	  stride: 2
 	  weight: 1
-	  used: True
+	  used: true
 	}
 	# sp param of layer conv3
 	spatial_operation_param {
@@ -636,7 +636,7 @@ layer {
 	  kernel_size: 3
 	  stride: 1
 	  weight: 0
-	  used: False
+	  used: false
 	}
 	# sp param of layer conv4
 	spatial_operation_param {
@@ -644,7 +644,7 @@ layer {
 	  kernel_size: 3
 	  stride: 1
 	  weight: 1
-	  used: True
+	  used: true
 	}
 	# sp param of layer conv5
 	spatial_operation_param {
@@ -652,7 +652,7 @@ layer {
 	  kernel_size: 3
 	  stride: 1
 	  weight: 0
-	  used: False
+	  used: false
 	}
 	# sp param of layer pool5
 	spatial_operation_param {
@@ -660,7 +660,7 @@ layer {
 	  kernel_size: 3
 	  stride: 2
 	  weight: 0
-	  used: False
+	  used: false
 	}
   }
 }
@@ -688,6 +688,8 @@ layer {
   bottom: "partial_derivatives"
   top: "perceptual_loss"
   
-  num_landmark: 5
-  epsilon: 0.001
+  perceptual_loss_param { 
+    num_landmark: 5
+    epsilon: 0.001
+  }
 }
