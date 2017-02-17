@@ -402,6 +402,44 @@ class FacialLandmarkPerformanceLayer: public Layer<Dtype> {
 };
 
 template <typename Dtype>
+class L2DistanceLossLayer: public LossLayer<Dtype> {
+ public:
+  explicit L2DistanceLossLayer(const LayerParameter& param)
+       : LossLayer<Dtype>(param){}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                          const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                       const vector<Blob<Dtype>*>& top);
+  
+  virtual inline const char* type() {return "L2DistanceLoss";}
+  virtual inline int ExactNumBottomBlobs() const {return 3;}
+  virtual inline int MinTopBlobs() const {return 1;} 
+  virtual inline int MaxTopBlobs() const {return 1;}
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+  
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+
+  int num_landmark_;
+  Dtype error_threshold_;
+  Blob<Dtype> diff_x;
+  Blob<Dtype> diff_y;
+  Blob<Dtype> sum;
+
+};
+
+template <typename Dtype>
 class BoundingBox {
  public:
   BoundingBox(Dtype x, Dtype y, Dtype w, Dtype h) {

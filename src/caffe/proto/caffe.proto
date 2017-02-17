@@ -374,6 +374,7 @@ message LayerParameter {
   optional EmbedParameter embed_param = 137;
   optional ExpParameter exp_param = 111;
   optional FacialLandmarkPerformanceParameter facial_landmark_performance_param = 1526703;
+  optional L2DistanceLossParameter l2_distance_loss_param = 1526704;
   optional FlattenParameter flatten_param = 135;
   optional HDF5DataParameter hdf5_data_param = 112;
   optional HDF5OutputParameter hdf5_output_param = 113;
@@ -1405,6 +1406,14 @@ message PReLUParameter {
 }
 
 message FacialLandmarkPerformanceParameter {
+  // the number of landmakrs
+  optional uint32 num_landmark = 1 [default = 5];
+  // false rate ratio
+  optional float error_threshold = 2 [default = 0.05];
+
+}
+
+message L2DistanceLossParameter {
   // the number of landmakrs
   optional uint32 num_landmark = 1 [default = 5];
   // false rate ratio
