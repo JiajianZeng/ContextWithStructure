@@ -29,9 +29,9 @@ void L2DistanceLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   
   // top[0] stores the l2distance error for landmarks 
   top[0]->Reshape(1, 1, 1, 1);
-  diff_x.Reshape(bottom[0]->num(), num_landmark_, 1, 1);
-  diff_y.Reshape(diff_x.shape());
-  sum.Reshape(diff_x.shape());
+  diff_x_.Reshape(bottom[0]->num(), num_landmark_, 1, 1);
+  diff_y_.Reshape(diff_x_.shape());
+  sum_.Reshape(diff_x_.shape());
   
 }
 

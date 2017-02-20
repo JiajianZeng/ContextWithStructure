@@ -467,9 +467,9 @@ class L2DistanceLossLayer: public LossLayer<Dtype> {
 
   int num_landmark_;
   Dtype error_threshold_;
-  Blob<Dtype> diff_x;
-  Blob<Dtype> diff_y;
-  Blob<Dtype> sum;
+  Blob<Dtype> diff_x_;
+  Blob<Dtype> diff_y_;
+  Blob<Dtype> sum_;
 
 };
 
