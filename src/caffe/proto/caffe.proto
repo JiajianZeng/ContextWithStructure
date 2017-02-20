@@ -375,6 +375,7 @@ message LayerParameter {
   optional ExpParameter exp_param = 111;
   optional FacialLandmarkPerformanceParameter facial_landmark_performance_param = 1526703;
   optional L2DistanceLossParameter l2_distance_loss_param = 1526704;
+  optional ChannelExpandParameter channel_expand_param = 1526705;
   optional FlattenParameter flatten_param = 135;
   optional HDF5DataParameter hdf5_data_param = 112;
   optional HDF5OutputParameter hdf5_output_param = 113;
@@ -1445,6 +1446,12 @@ message PerceptualLossParameter {
   optional uint32 num_landmark = 1 [default = 5];
   // sqrt(x^2 + epsilon)
   optional float epsilon = 2 [default = 1.0];
+}
+
+
+message ChannelExpandParameter {
+  
+  optional uint32 scale = 1 [default = 3];
 }
 
 message YoloLossParameter {

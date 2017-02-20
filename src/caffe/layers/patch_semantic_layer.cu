@@ -29,7 +29,7 @@ void best_fiducial(const pair<Dtype, Dtype>& landmark, const pair<int, int>& ima
   // patch width and height
   Dtype patch_w = patch.first, patch_h = patch.second;
   // tweak landmark that crosses image boundary
-  Dtype landmark_x = ceil(landmark.first), landmark_y = ceil(landmark.second);
+  Dtype landmark_x = ceil(landmark.first*img_w), landmark_y = ceil(landmark.second*img_h);
   landmark_x = GE_and_LE(landmark_x, 0, img_w); 
   landmark_y = GE_and_LE(landmark_y, 0, img_h);
   // create a small patch around the landmark 

@@ -149,7 +149,7 @@ class FacialLandmarkPerformanceLayerTest : public MultiDeviceTest<TypeParam> {
     delete blob_top_average_error;
     delete blob_top_false_rate;
   }
-  
+
   Blob<Dtype>* const blob_bottom_data_;
   Blob<Dtype>* const blob_bottom_label_;
   Blob<Dtype>* const blob_bottom_normalizer_;
