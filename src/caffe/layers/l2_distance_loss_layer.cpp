@@ -27,13 +27,11 @@ void L2DistanceLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   // reshape bottom[2] to (batch, 1, 1, 1);
   bottom[2]->Reshape(bottom[2]->num(), 1, 1, 1);
   
-  // top[0] stores one average error for each landmark 
+  // top[0] stores the l2distance error for landmarks 
   top[0]->Reshape(1, 1, 1, 1);
   diff_x.Reshape(bottom[0]->num(), num_landmark_, 1, 1);
   diff_y.Reshape(diff_x.shape());
   sum.Reshape(diff_x.shape());
-  // top[1] stores one false rate for each landmark
-  //top[1]->Reshape(num_landmark_, 1, 1, 1);
   
 }
 

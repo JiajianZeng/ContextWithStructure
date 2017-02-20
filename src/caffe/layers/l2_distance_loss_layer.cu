@@ -61,24 +61,14 @@ void L2DistanceLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   
   // bottom[2] stores bi-ocular distance of the shape (batch, 1, 1, 1);
   // sum = sqrt((x - x')^2 + (y - y')^2) / bi-ocular-distance
-  /*
-  for (int b = 0; b < bottom[2]->num(); ++b) {
-    for (int n = 0; n < num_landmark_; ++n) {
-      sum.mutable_cpu_data()[sum.offset(b) + n] = 
-          sum.cpu_data()[sum.offset(b) + n] / bottom[2]->cpu_data()[bottom[2]->offset(b)];
-      
-    }
-  }*/
 
   Dtype sum_error = Dtype(0);
-  // calculate average error of each landmark
-  // top[0] stores average error for each landmark
+
   for (int n = 0; n < num_landmark_; ++n) {
     for (int b = 0; b < sum.num(); ++b) {
       sum_error += sum.cpu_data()[sum.offset(b, n)];
     }
     
-    //top[0]->mutable_cpu_data()[top[0]->offset(n)] = sum_error / sum.num();
   }
   top[0]->mutable_cpu_data()[0] = sum_error / sum.num();
 }
@@ -125,29 +115,6 @@ void L2DistanceLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 }
 
 
-template <typename Dtype>
-void PrintBlob(const Blob<Dtype> &blob, string name){
-  std::cout << "#################################" << std::endl;
-  std::cout << "name:" << name << std::endl;
-  std::cout << "num:" << blob.num() << std::endl;
-  std::cout << "channel:" << blob.channels() << std::endl;
-  std::cout << "height:" << blob.height() << std::endl;
-  std::cout << "width:" << blob.width() << std::endl;
-  std::cout << "data:" << std::endl;
-  std::cout << "[";
-  for (int n = 0; n < blob.num(); ++n){
-    for (int c = 0; c < blob.channels(); ++c){
-      for (int h = 0; h < blob.height(); ++h){
-        for (int w = 0; w < blob.width(); ++w){
-          std::cout << blob.data_at(n,c,h,w) << ",";
-        }
-      }
-    }
-  }
-  std::cout << "]" << std::endl;
-  std::cout << "#################################" << std::endl;
-   
-}
 
 INSTANTIATE_LAYER_GPU_FUNCS(L2DistanceLossLayer);
 } // namespace caffe

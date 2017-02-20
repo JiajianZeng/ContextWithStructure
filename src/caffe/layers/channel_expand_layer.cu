@@ -26,29 +26,7 @@ void ChannelExpandLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 }
 
 
-template <typename Dtype>
-void PrintBlob(const Blob<Dtype> &blob, string name){
-  std::cout << "#################################" << std::endl;
-  std::cout << "name:" << name << std::endl;
-  std::cout << "num:" << blob.num() << std::endl;
-  std::cout << "channel:" << blob.channels() << std::endl;
-  std::cout << "height:" << blob.height() << std::endl;
-  std::cout << "width:" << blob.width() << std::endl;
-  std::cout << "data:" << std::endl;
-  std::cout << "[";
-  for (int n = 0; n < blob.num(); ++n){
-    for (int c = 0; c < blob.channels(); ++c){
-      for (int h = 0; h < blob.height(); ++h){
-        for (int w = 0; w < blob.width(); ++w){
-          std::cout << blob.data_at(n,c,h,w) << ",";
-        }
-      }
-    }
-  }
-  std::cout << "]" << std::endl;
-  std::cout << "#################################" << std::endl;
-   
-}
+
 
 INSTANTIATE_LAYER_GPU_FUNCS(ChannelExpandLayer);
 } // namespace caffe
