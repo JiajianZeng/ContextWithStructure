@@ -396,7 +396,7 @@ class ChannelExpandLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
                             const vector<bool>& propagate_down,
                             const vector<Blob<Dtype>*>& bottom);
-  int scale_;
+  int num_channel_;
   
 };
 

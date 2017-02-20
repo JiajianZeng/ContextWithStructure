@@ -6,7 +6,7 @@ template <typename Dtype>
 void ChannelExpandLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                            const vector<Blob<Dtype>*>& top){
   ChannelExpandParameter ce_param = this->layer_param_.channel_expand_param();
-  scale_ = ce_param.scale();
+  num_channel_ = ce_param.num_channel();
 }
 
 template <typename Dtype>
@@ -17,7 +17,7 @@ void ChannelExpandLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   bottom[0]->Reshape(bottom[0]->num(), 1, bottom[0]->height(), bottom[0]->width());
   
   // top[0] stores the expanded channel of bottom[0]
-  top[0]->Reshape(bottom[0]->num(), scale_, bottom[0]->height(), bottom[0]->width()); 
+  top[0]->Reshape(bottom[0]->num(), num_channel_, bottom[0]->height(), bottom[0]->width()); 
   
 }
 

@@ -88,7 +88,7 @@ class ChannelExpandLayerTest : public MultiDeviceTest<TypeParam> {
     LayerParameter layer_param;
     ChannelExpandParameter* ce_param = 
         layer_param.mutable_channel_expand_param();
-    ce_param->set_scale(3);
+    ce_param->set_num_channel(3);
 
 
     ChannelExpandLayer<Dtype> layer_weight(layer_param);

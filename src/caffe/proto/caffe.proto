@@ -1451,7 +1451,7 @@ message PerceptualLossParameter {
 
 message ChannelExpandParameter {
   
-  optional uint32 scale = 1 [default = 3];
+  optional uint32 num_channel = 1 [default = 3];
 }
 
 message YoloLossParameter {
