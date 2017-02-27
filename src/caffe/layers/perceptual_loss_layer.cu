@@ -17,7 +17,8 @@ void PerceptualLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   Blob<Dtype> delta_x, delta_y;
   delta_x.Reshape(derivative_x_.shape());
   delta_y.Reshape(delta_x.shape());
-  // bottom[0] stores predictions of the shape (batch, num_landmark, 2, 1)
+  // bottom[0] stores (delta_x, delta_y) pair of each landmark 
+  // so its shape is (batch, num_landmark, 2, 1)
   for (int b = 0; b < bottom[0]->num(); ++b){    
     for (int n = 0; n < num_landmark_; ++n){
       delta_x.mutable_cpu_data()[delta_x.offset(b) + n] = 
@@ -27,7 +28,8 @@ void PerceptualLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     }
   }
   
-  // bottom[1] stores ground truth of the shape (batch, num_landmark, 3, 1)
+  // bottom[1] stores (Ex, Ey, Et) triplet of each landmark
+  // so its shape is (batch, num_landmark, 3, 1)
   for (int b = 0; b < bottom[1]->num(); ++b){
     for (int n = 0; n < num_landmark_; ++n){
       derivative_x_.mutable_cpu_data()[derivative_x_.offset(b) + n] = 
@@ -127,54 +129,6 @@ void PerceptualLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     diff.gpu_data(),
     Dtype(0),
     bottom[0]->mutable_gpu_diff());
-   
-}
-
-template <typename Dtype>
-void PerceptualPrintBlobDiff(const Blob<Dtype>* blob, string name){
-  std::cout << "#################################" << std::endl;
-  std::cout << "name:" << name << std::endl;
-  std::cout << "num:" << blob->num() << std::endl;
-  std::cout << "channel:" << blob->channels() << std::endl;
-  std::cout << "height:" << blob->height() << std::endl;
-  std::cout << "width:" << blob->width() << std::endl;
-  std::cout << "diff:" << std::endl;
-  std::cout << "[";
-  for (int n = 0; n < blob->num(); ++n){
-    for (int c = 0; c < blob->channels(); ++c){
-      for (int h = 0; h < blob->height(); ++h){
-        for (int w = 0; w < blob->width(); ++w){
-          std::cout << blob->diff_at(n,c,h,w) << ",";
-        }
-      }
-    }
-  }
-  std::cout << "]" << std::endl;
-  std::cout << "#################################" << std::endl;
-   
-}
-
-template <typename Dtype>
-void PrintBlob(const Blob<Dtype> &blob, string name){
-  std::cout << "#################################" << std::endl;
-  std::cout << "name:" << name << std::endl;
-  std::cout << "num:" << blob.num() << std::endl;
-  std::cout << "channel:" << blob.channels() << std::endl;
-  std::cout << "height:" << blob.height() << std::endl;
-  std::cout << "width:" << blob.width() << std::endl;
-  std::cout << "data:" << std::endl;
-  std::cout << "[";
-  for (int n = 0; n < blob.num(); ++n){
-    for (int c = 0; c < blob.channels(); ++c){
-      for (int h = 0; h < blob.height(); ++h){
-        for (int w = 0; w < blob.width(); ++w){
-          std::cout << blob.data_at(n,c,h,w) << ",";
-        }
-      }
-    }
-  }
-  std::cout << "]" << std::endl;
-  std::cout << "#################################" << std::endl;
    
 }
 
