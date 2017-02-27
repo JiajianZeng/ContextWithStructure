@@ -18,14 +18,11 @@ void L2DistanceLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       << "Ground truth must have dimension num_landmark * 2 .";
   CHECK_EQ(bottom[1]->count(1), 2 * num_landmark_)
       << "Predictions must have dimension num_landmark * 2 .";
-  CHECK_EQ(bottom[2]->count(1), 1)
-      << "Each image must have one normalizer (bi-ocular distance or width of facial bounding box).";
   // reshape bottom[0] to (batch, num_landmark, 2, 1)
   bottom[0]->Reshape(bottom[0]->num(), num_landmark_, 2, 1);
   // reshape bottom[1] to (batch, num_landmark, 2, 1)
   bottom[1]->Reshape(bottom[1]->num(), num_landmark_, 2, 1);
   // reshape bottom[2] to (batch, 1, 1, 1);
-  bottom[2]->Reshape(bottom[2]->num(), 1, 1, 1);
   
   // top[0] stores the l2distance error for landmarks 
   top[0]->Reshape(1, 1, 1, 1);
