@@ -14,8 +14,8 @@ __global__ void ForwardSqrt(int n, const Dtype* in, Dtype* out) {
 template <typename Dtype>
 void L2DistanceLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
                                                         const vector<Blob<Dtype>*>& top) {
-  // bottom[0] stores ground truth of the shape (batch, num_landmark, 2, 1)
-  // bottom[1] stores predictions of the shape (batch, num_landmark, 2, 1)
+  // bottom[0] stores landmark predictions of the shape (batch, num_landmark, 2, 1)
+  // bottom[1] stores landmark ground truth of the shape (batch, num_landmark, 2, 1)
   // diff_x_ = x - x'
   // diff_y_ = y - y'
   for (int b = 0; b < bottom[0]->num(); ++b){    

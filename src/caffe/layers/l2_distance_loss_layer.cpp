@@ -15,9 +15,15 @@ template <typename Dtype>
 void L2DistanceLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
   CHECK_EQ(bottom[0]->count(1), 2 * num_landmark_)
-      << "Ground truth must have dimension num_landmark * 2 .";
+      << "Landmark predictions must have dimension num_landmark * 2 .";
   CHECK_EQ(bottom[1]->count(1), 2 * num_landmark_)
+<<<<<<< HEAD
       << "Predictions must have dimension num_landmark * 2 .";
+=======
+      << "Landmark ground truth must have dimension num_landmark * 2 .";
+  CHECK_EQ(bottom[2]->count(1), 1)
+      << "Each image must have one normalizer (bi-ocular distance or width of facial bounding box).";
+>>>>>>> 6c25c223680f5ec93f7cd50019196b13a8192bd5
   // reshape bottom[0] to (batch, num_landmark, 2, 1)
   bottom[0]->Reshape(bottom[0]->num(), num_landmark_, 2, 1);
   // reshape bottom[1] to (batch, num_landmark, 2, 1)

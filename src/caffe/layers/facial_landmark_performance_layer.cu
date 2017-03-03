@@ -18,8 +18,8 @@ void FacialLandmarkPerformanceLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>
   diff_x.Reshape(bottom[0]->num(), num_landmark_, 1, 1);
   diff_y.Reshape(diff_x.shape());
   sum.Reshape(diff_x.shape());
-  // bottom[0] stores ground truth of the shape (batch, num_landmark, 2, 1)
-  // bottom[1] stores predictions of the shape (batch, num_landmark, 2, 1)
+  // bottom[0] stores landmark predictions of the shape (batch, num_landmark, 2, 1)
+  // bottom[1] stores landmark ground truth of the shape (batch, num_landmark, 2, 1)
   // diff_x = x - x'
   // diff_y = y - y'
   for (int b = 0; b < bottom[0]->num(); ++b){    
@@ -94,31 +94,6 @@ void FacialLandmarkPerformanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype
                                                          const vector<bool>& propagate_down,
                                                          const vector<Blob<Dtype>*>& bottom) {
    // backward do nothing
-}
-
-
-template <typename Dtype>
-void PrintBlob(const Blob<Dtype> &blob, string name){
-  std::cout << "#################################" << std::endl;
-  std::cout << "name:" << name << std::endl;
-  std::cout << "num:" << blob.num() << std::endl;
-  std::cout << "channel:" << blob.channels() << std::endl;
-  std::cout << "height:" << blob.height() << std::endl;
-  std::cout << "width:" << blob.width() << std::endl;
-  std::cout << "data:" << std::endl;
-  std::cout << "[";
-  for (int n = 0; n < blob.num(); ++n){
-    for (int c = 0; c < blob.channels(); ++c){
-      for (int h = 0; h < blob.height(); ++h){
-        for (int w = 0; w < blob.width(); ++w){
-          std::cout << blob.data_at(n,c,h,w) << ",";
-        }
-      }
-    }
-  }
-  std::cout << "]" << std::endl;
-  std::cout << "#################################" << std::endl;
-   
 }
 
 INSTANTIATE_LAYER_GPU_FUNCS(FacialLandmarkPerformanceLayer);

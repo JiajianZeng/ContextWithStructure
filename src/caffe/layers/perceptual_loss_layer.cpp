@@ -18,9 +18,9 @@ void PerceptualLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                    const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::Reshape(bottom, top);
   CHECK_EQ(bottom[0]->count(1), 2 * num_landmark_)
-      << "Predictions must have dimension num_landmark * 2 .";
+      << "Residuals (delta_x, delta_y) must have dimension num_landmark * 2 .";
   CHECK_EQ(bottom[1]->count(1), 3 * num_landmark_)
-      << "Ground truth must have dimension num_landmark * 3 .";
+      << "Partial derivatives (Ex, Ey and Et) must have dimension num_landmark * 3 .";
   // reshape bottom[0] to (batch, num_landmark, 2, 1)
   bottom[0]->Reshape(bottom[0]->num(), num_landmark_, 2, 1);
   // reshape bottom[1] to (batch, num_landmark, 3, 1)
