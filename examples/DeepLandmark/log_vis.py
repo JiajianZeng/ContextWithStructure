@@ -3,7 +3,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-import logging
+import ntpath
 
 class CaffeLogAnalyzer(object):
   """Caffe log analyzer"""
@@ -148,13 +148,7 @@ class CaffeLogAnalyzer(object):
     x = x[index]
     y = y[index]
     
-    x_max = np.amax(x)
-    x_min = np.amin(x)
-    y_max = np.amax(y)
-    y_min = np.amin(y)
-    axis = [x_min, x_max, np.floor(y_min), np.ceil(y_max)]
     plt.plot(x, y, 'r^--')
-    plt.axis(axis)
     plt.ylabel(y_label)
     plt.xlabel(x_label)
     plt.show()    
@@ -270,6 +264,14 @@ class CaffeTrainLogAnalyzer(CaffeLogAnalyzer):
     else:
       print "INFO:CaffeTrainLogAnalyzer] Stage ({}), analyzing loss ({})".format(self.stage, self.loss)
       self.plot(iter_array, loss_array, 'Iteration', self.loss)
+      
+  def output_loss(self):
+    """
+    Just output loss information in training stage in array format
+    """
+    if self.total_loss:
+      return self._analyze_total_loss()
+    return self._analyze_specified_loss()
     
   def analyze_info(self):
     """
@@ -287,7 +289,8 @@ class CaffeTestLogAnalyzer(CaffeLogAnalyzer):
     CaffeLogAnalyzer.__init__(self, log, start, end, step, loss, info)
     self._stage = 'test'
     self._stage_re = r'Iteration ([0-9]+), Testing net'
-    self._loss_re = self.loss + r' = ([0-9]*\.?[0-9]*) \(\* ([0-9]*\.?[0-9]*) = ([0-9]*\.?[0-9]*) loss\)'
+    if self.loss:
+      self._loss_re = self.loss + r' = ([0-9]*\.?[0-9]*) \(\* ([0-9]*\.?[0-9]*) = ([0-9]*\.?[0-9]*) loss\)'
     self._train_stage_re = r'Iteration ([0-9]+), loss = ([0-9]*\.?[0-9]*)'
     if self.info:
       self._info_re = self.info + r' = ([0-9]*\.?[0-9]*)'
@@ -387,13 +390,220 @@ class CaffeTestLogAnalyzer(CaffeLogAnalyzer):
       print "INFO:CaffeTestLogAnalyzer] Stage ({}), analyzing output ({})".format(self.stage, self.info)
       self.plot(iter_array, info_array, 'Iteration', self.info)
       
-
+  def output_loss(self):
+    """
+    Just output loss information in array format
+    """
+    return self._analyze_output(self.loss_re, self.loss_group)
+  
+  def output_info(self):
+    """
+    Just output info in array format
+    """
+    return self._analyze_output(self.info_re, self.info_group)
+  
+  
+class CaffeLogCompariser(object):
+  """
+  Caffe log compariser
+  """
+  def __init__(self, logs, stage, start, end, step, loss=None, info=None):
+    self._caffe_log_analyzer = []
+    if stage == 'train':
+      self._caffe_log_analyzer = [CaffeTrainLogAnalyzer(log, start, end, step, loss, info) for log in logs]
+    elif stage == 'test':
+      self._caffe_log_analyzer = [CaffeTestLogAnalyzer(log, start, end, step, loss, info) for log in logs]
+    else:
+      print "WARNING:CaffeLogCompariser] No such stage ({})".format(stage)
+    self._stage = stage
+    
+    self._start = start
+    self._end = end
+    self._step = step
+    self._default_step = 5
+    
+    self._loss = loss
+    if self._loss:
+      self._loss = self._loss.strip()
+    
+    self._info = info
+    if self._info:
+      self._info = self._info.strip()
+    
+    self._logs = logs
+    
+    self._legend_prefix = []
+    for log in logs:
+      head, tail = ntpath.split(log)
+      self._legend_prefix.append(tail or ntpath.basename(head))
+      
+    self._output_key = 'output_array'
+    self._iter_key = 'iter_array'
+    self._existence_key = 'no_such_output'
+    
+    
+  @property
+  def caffe_log_analyzer(self):
+    return self._caffe_log_analyzer
+  
+  @property
+  def stage(self):
+    return self._stage
+  
+  @property
+  def start(self):
+    return self._start
+  
+  @start.setter
+  def start(self, start):
+    self._start = start
+  
+  @property
+  def end(self):
+    return self._end
+  
+  @end.setter
+  def end(self, end):
+    self._end = end
+  
+  @property
+  def step(self):
+    return self._step
+  
+  @step.setter
+  def step(self, step):
+    self._step = step
+    
+  @property  
+  def default_step(self):
+    return self._default_step
+  
+  @property
+  def loss(self):
+    return self._loss
+  
+  @property
+  def info(self):
+    return self._info
+  
+  @property
+  def logs(self):
+    return self._logs
+  
+  @property
+  def legend_prefix(self):
+    return self._legend_prefix
+  
+  @property
+  def output_key(self):
+    return self._output_key
+  
+  @property
+  def iter_key(self):
+    return self._iter_key
+  
+  @property
+  def existence_key(self):
+    return self._existence_key
+  
+  def _output(self):
+    """
+    Output corresponding information in corresponding stage
+    At present, only one type of information (loss or non_loss) within one stage (train or test) can be outputed
+    TODO
+    support combinations of different types of information within different stages
+    """
+    output = {}
+    if self.stage == 'train':
+      for i in xrange(len(self.logs)):
+	output_this_log = {}
+	output_this_log[self.iter_key], output_this_log[self.output_key], output_this_log[self.existence_key] = \
+	  self.caffe_log_analyzer[i].output_loss()
+	output[self.legend_prefix[i]] = output_this_log
+    else:
+      for i in xrange(len(self.logs)):
+	output_this_log = {}
+	if self.info:
+	  output_this_log[self.iter_key], output_this_log[self.output_key], output_this_log[self.existence_key] = \
+	    self.caffe_log_analyzer[i].output_info()
+	elif self.loss:
+	  output_this_log[self.iter_key], output_this_log[self.output_key], output_this_log[self.existence_key] = \
+	    self.caffe_log_analyzer[i].output_loss()
+	output[self.legend_prefix[i]] = output_this_log
+    return output
+  
+  def _data_filter(self, x, y):
+    """
+    Filter data
+    """
+    size = min(x.size, y.size)
+    x = x[:size]
+    y = y[:size]
+    x_max = np.amax(x)
+    x_min = np.amin(x)
+    if self.start < x_min:
+      print "WARNING:CaffeLogAnalyzer] Start iteration ({}) should be greater than the minimum iteration ({})".format(self.start, x_min)
+      self.start = x_min
+    if self.start > x_max:
+      print "ERROR:CaffeLogAnalyzer] Start iteration ({}) should be less than the maximun iteration ({})".format(self.start, x_max)
+      return
+    if self.end > x_max:
+      print "WARNING:CaffeLogAnalyzer] End iteration ({}) should be less than the maximun iteration ({})".format(self.end, x_max)
+      self.end = x_max
+    if self.end < x_min:
+      print "ERROR:CaffeLogAnalyzer] End iteration ({}) should be greater than the minimum iteration ({})".format(self.end, x_min)
+      return
+    if self.end < self.start:
+      print "ERROR:CaffeLogAnalyzer] End iteration ({}) should be greater than or equal to the start iteration ({})".format(self.end, self.start)
+      return
+    if self.step < 0:
+      print "WARNING:CaffeLogAnalyzer] Step ({}) shoule be a positive integer".format(self.step)
+      self.step = self.default_step
+    
+    index = np.zeros((0), np.int32)
+    i = j = 0
+    while(i < x.size):
+      if x[i] >= self.start and x[i] <= self.end:
+	if j % self.step == 0:
+	  index = np.hstack((index, i))
+	j += 1	
+      i += 1
+    return x[index], y[index]
+  
+  def _plot(self, input_data, x_label, y_label):
+    """
+    Plot data
+    """
+    i = 0
+    style = ['r^--','gs--','bo--','','',]
+    for key in input_data.keys():
+      # input_data.get(key)[self.existence_key] returns true if such output does not exist
+      if not input_data.get(key)[self.existence_key]:
+	x, y = self._data_filter(input_data.get(key)[self.iter_key], input_data.get(key)[self.output_key])
+	plt.plot(x, y, style[i], label=key)
+	i += 1
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode='expand', borderaxespad=0.)
+    plt.ylabel(y_label)
+    plt.xlabel(x_label)
+    plt.show()
+    
+  def compare(self):
+    """
+    """
+    if self.stage == 'train':
+      y_label = self.loss
+    else:
+      if self.info:
+	y_label = self.info
+      else:
+	y_label = self.loss
+    self._plot(self._output(), 'iteration', y_label)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Analyze a log file.')
-    parser.add_argument('--log',
+    parser.add_argument('--log', action='append',
                         help='log file',
-                        default=None, type=str)
+                        default=[], type=str)
     # At present, we only support caffe
     # TODO
     # support for other deep learning frameworks
@@ -429,22 +639,32 @@ def parse_args():
   
 if __name__ == '__main__':
     args = parse_args()
-    if args.log:
+    if len(args.log) == 1:
       if args.stage == 'train':
 	if args.loss:
-	  la = CaffeTrainLogAnalyzer(args.log, args.start, args.end, args.step, loss=args.loss)
+	  la = CaffeTrainLogAnalyzer(args.log[0], args.start, args.end, args.step, loss=args.loss)
 	else:
-	  la = CaffeTrainLogAnalyzer(args.log, args.start, args.end, args.step, loss='loss')
+	  la = CaffeTrainLogAnalyzer(args.log[0], args.start, args.end, args.step, loss='loss')
 	la.analyze_loss()
       else:
         if args.loss:
-	  la = CaffeTestLogAnalyzer(args.log, args.start, args.end, args.step, loss=args.loss)
+	  la = CaffeTestLogAnalyzer(args.log[0], args.start, args.end, args.step, loss=args.loss)
 	  la.analyze_loss()
 	elif args.info:
-	  la = CaffeTestLogAnalyzer(args.log, args.start, args.end, args.step, info=args.info)
+	  la = CaffeTestLogAnalyzer(args.log[0], args.start, args.end, args.step, info=args.info)
 	  la.analyze_info()
 	else:
 	  print "ERROR:CaffeTestLogAnalyzer] Both loss and info are not specified"
+    elif len(args.log) > 1:
+      loss = args.loss
+      if args.stage == 'train' and args.loss is None:
+	loss = 'loss'
+      if args.stage == 'test' and args.loss is None and args.info is None:
+	print "ERROR:CaffeLogCompariser] Both loss and info are not specified"
+	sys.exit(1)
+	
+      lc = CaffeLogCompariser(args.log, args.stage, args.start, args.end, args.step, loss, args.info)
+      lc.compare()
     else:
       print "ERROR:CaffeLogAnalyzer] No log file specified"
     
