@@ -45,6 +45,7 @@ def evaluateError(landmarkGt, landmarkP, benchmark):
      
 def E(txt, isColor, test_mode, img_size, deploy_proto, caffemodel, layer_name, dataset):
     F_imgs = []
+
     if(isColor):
         channel = 3
     else:

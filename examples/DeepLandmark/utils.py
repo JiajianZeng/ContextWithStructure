@@ -21,20 +21,32 @@ def show_landmark(face, landmark):
     cv2.waitKey(0)
 
 
-def rotate(img, bbox, landmark, alpha):
+def rotate(img, bbox, landmark, alpha, channel):
     """
         given a face with bbox and landmark, rotate with alpha
         and return rotated face with bbox, landmark (absolute position)
     """
     center = ((bbox.left+bbox.right)/2, (bbox.top+bbox.bottom)/2)
     rot_mat = cv2.getRotationMatrix2D(center, alpha, 1)
-    img_rotated_by_alpha = cv2.warpAffine(img, rot_mat, img.shape)
+    if(channel == 1):
+       img_rotated_by_alpha = cv2.warpAffine(img, rot_mat, img.shape)
+    elif(channel == 3):
+       #img_rotated_by_alpha = cv2.warpAffine(img[:,:,0], rot_mat, img[:,:,0].shape)
+       #img_rotated_by_alpha = np.zeros((img.shape[1],img.shape[0],3))
+       img_rotated_by_alpha = cv2.warpAffine(img, rot_mat, (img.shape[0],img.shape[1]))
+       #img_rotated_by_alpha[:,:,0] = cv2.warpAffine(img[:,:,0], rot_mat, img[:,:,0].shape)
+       #img_rotated_by_alpha[:,:,1] = cv2.warpAffine(img[:,:,1], rot_mat, img[:,:,1].shape)
+       #img_rotated_by_alpha[:,:,2] = cv2.warpAffine(img[:,:,2], rot_mat, img[:,:,2].shape)
     landmark_ = np.asarray([(rot_mat[0][0]*x+rot_mat[0][1]*y+rot_mat[0][2],
-                 rot_mat[1][0]*x+rot_mat[1][1]*y+rot_mat[1][2]) for (x, y) in landmark])
+                 rot_mat[1][0]*x+rot_mat[1][1]*y+rot_mat[1][2]) for (x, y) in landmark])  
     face = img_rotated_by_alpha[bbox.top:bbox.bottom+1,bbox.left:bbox.right+1]
     return (face, landmark_)
 
-
+def colorJitter(face):
+    delta = 0.8
+    m = face.mean()
+    CR = delta*face + (1-delta)*m
+    return CR
 def flip(face, landmark):
     """
         flip face
