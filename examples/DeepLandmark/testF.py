@@ -45,6 +45,8 @@ def evaluateError(landmarkGt, landmarkP, benchmark):
      
 def E(txt, isColor, test_mode, img_size, deploy_proto, caffemodel, layer_name, dataset):
     F_imgs = []
+
+
     if(isColor):
         channel = 3
     else:
@@ -62,8 +64,10 @@ def E(txt, isColor, test_mode, img_size, deploy_proto, caffemodel, layer_name, d
             img = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
         assert(img is not None)
         logger("process %s" % imgPath)
-        #f_bbox = bbox.subBBox(-0.05, 1.05, -0.05, 1.05)
-        f_bbox = bbox
+        #print (img.shape[0], img.shape[1])
+        f_bbox = bbox.subBBox(-0.05, 1.05, -0.05, 1.05, img.shape[0], img.shape[1])
+        #f_bbox = bbox
+        #print (f_bbox.top, f_bbox.bottom, f_bbox.left, f_bbox.right)
         f_face = img[f_bbox.top:f_bbox.bottom+1,f_bbox.left:f_bbox.right+1]
         f_face = cv2.resize(f_face, (img_size, img_size))
         f_face = f_face.reshape((channel, img_size, img_size))

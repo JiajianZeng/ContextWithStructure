@@ -42,7 +42,11 @@ def rotate(img, bbox, landmark, alpha, channel):
     face = img_rotated_by_alpha[bbox.top:bbox.bottom+1,bbox.left:bbox.right+1]
     return (face, landmark_)
 
-
+def colorJitter(face):
+    delta = 0.8
+    m = face.mean()
+    CR = delta*face + (1-delta)*m
+    return CR
 def flip(face, landmark):
     """
         flip face

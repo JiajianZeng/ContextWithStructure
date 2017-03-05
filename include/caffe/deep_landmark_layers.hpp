@@ -446,7 +446,7 @@ class L2DistanceLossLayer: public LossLayer<Dtype> {
                        const vector<Blob<Dtype>*>& top);
   
   virtual inline const char* type() {return "L2DistanceLoss";}
-  virtual inline int ExactNumBottomBlobs() const {return 3;}
+  virtual inline int ExactNumBottomBlobs() const {return 2;}
   virtual inline int MinTopBlobs() const {return 1;} 
   virtual inline int MaxTopBlobs() const {return 1;}
 
