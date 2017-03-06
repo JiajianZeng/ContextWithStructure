@@ -384,6 +384,7 @@ message LayerParameter {
   optional InfogainLossParameter infogain_loss_param = 116;
   optional InnerProductParameter inner_product_param = 117;
   optional InputParameter input_param = 143;
+  optional LocalConvolutionParameter local_conv_param = 1526706;
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
@@ -1487,4 +1488,43 @@ message SpatialOperationParameter {
   optional string name = 7; // the name of this spatial operation
   optional float weight = 8 [default = 1]; 
   optional bool used = 9 [default = false];
+}
+
+//Only for 2D convolution till now
+message LocalConvolutionParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional bool bias_term = 2 [default = true]; // whether to have bias terms
+  // Pad, kernel size, and stride are all given as a single value for equal
+  // dimensions in height and width or as Y, X pairs.
+  optional uint32 pad = 3 [default = 0]; // The padding size (equal in Y, X)
+  optional uint32 pad_h = 9 [default = 0]; // The padding height
+  optional uint32 pad_w = 10 [default = 0]; // The padding width
+  optional uint32 kernel_size = 4; // The kernel size (square)
+  optional uint32 kernel_h = 11; // The kernel height
+  optional uint32 kernel_w = 12; // The kernel width
+  optional uint32 group = 5 [default = 1]; // The group size for group conv
+  optional uint32 stride = 6 [default = 1]; // The stride (equal in Y, X)
+  optional uint32 stride_h = 13; // The stride height
+  optional uint32 stride_w = 14; // The stride width
+  repeated uint32 dilation = 25; // The dilation; defaults to 1
+  optional FillerParameter weight_filler = 7; // The filler for the weight
+  optional FillerParameter bias_filler = 8; // The filler for the bias
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 15 [default = DEFAULT];
+  
+  optional uint32 local_region_number = 16 [default = 1]; 		// If default, it will degrade to normal convlution
+  optional uint32 local_region_number_w = 17 [default = 1]; 	//, otherwise local_region_number * local_region_number local regions will 
+  optional uint32 local_region_number_h = 18 [default = 1]; 	// be convolved with different convolution kernel banks.
+
+  optional float local_region_ratio = 19 [default = 1.0]; 		// range in (0, 1], combined with local region number to determine the local region size
+  optional float local_region_ratio_w = 20 [default = 1.0]; 
+  optional float local_region_ratio_h = 21 [default = 1.0]; 
+  
+  optional uint32 local_region_step = 22 [default = 1]; 	//step between adjacent input local regions
+  optional uint32 local_region_step_w = 23 [default = 1]; 
+  optional uint32 local_region_step_h = 24 [default = 1]; 	
 }
