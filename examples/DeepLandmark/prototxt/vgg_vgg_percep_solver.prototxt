@@ -1,0 +1,23 @@
+net: "prototxt/vgg_vgg_percep.prototxt"
+
+test_iter: 10
+test_interval: 500
+
+base_lr: 0.01
+momentum: 0.9
+weight_decay: 0.0005
+
+lr_policy: "inv"
+gamma: 0.001
+power: 0.75
+
+#lr_policy: "step"
+#gamma: 0.1
+#stepsize: 20000
+
+display: 20
+max_iter: 100000
+
+snapshot: 10000
+snapshot_prefix: "model/vgg_vgg_percep/vgg_vgg_percep"
+solver_mode: GPU 
