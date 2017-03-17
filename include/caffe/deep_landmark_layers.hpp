@@ -474,6 +474,84 @@ class L2DistanceLossLayer: public LossLayer<Dtype> {
 };
 
 template <typename Dtype>
+class StructualLossLayer: public LossLayer<Dtype> {
+ public:
+  explicit StructualLossLayer(const LayerParameter& param)
+       : LossLayer<Dtype>(param){}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                          const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                       const vector<Blob<Dtype>*>& top);
+  
+  virtual inline const char* type() {return "StructualLoss";}
+  virtual inline int ExactNumBottomBlobs() const {return 2;}
+  virtual inline int MinTopBlobs() const {return 1;} 
+  virtual inline int MaxTopBlobs() const {return 1;}
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+  
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+
+  Dtype w0_;
+  Dtype w1_;
+  Dtype w2_;
+  Dtype w3_;
+ 
+  Blob<Dtype> diff_x_pre_;
+  Blob<Dtype> diff_y_pre_;
+  Blob<Dtype> diff_x_gt_;
+  Blob<Dtype> diff_y_gt_;
+  Blob<Dtype> diff_;
+  int num_landmark_;
+
+};
+
+template <typename Dtype>
+class AveragePointLayer: public Layer<Dtype> {
+ public:
+  explicit AveragePointLayer(const LayerParameter& param)
+      : Layer<Dtype>(param){}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                          const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                       const vector<Blob<Dtype>*>& top);
+  
+  virtual inline const char* type() {return "AveragePoint";}
+  virtual inline int MinBottomBlobs() const {return 1;}
+  virtual inline int MinTopBlobs() const {return 1;} 
+  virtual inline int MaxTopBlobs() const {return 1;}
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                           const vector<Blob<Dtype>*>& top);
+
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+  
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                            const vector<bool>& propagate_down,
+                            const vector<Blob<Dtype>*>& bottom);
+
+  int num_landmark_;
+
+};
+
+template <typename Dtype>
 class BoundingBox {
  public:
   BoundingBox(Dtype x, Dtype y, Dtype w, Dtype h) {

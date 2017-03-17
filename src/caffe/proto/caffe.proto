@@ -385,6 +385,8 @@ message LayerParameter {
   optional InnerProductParameter inner_product_param = 117;
   optional InputParameter input_param = 143;
   optional LocalConvolutionParameter local_conv_param = 1526706;
+  optional StructualLossParameter structual_loss_param = 1526707;
+  optional AveragePointParameter average_point_param = 1526708;
   optional LogParameter log_param = 134;
   optional LRNParameter lrn_param = 118;
   optional MemoryDataParameter memory_data_param = 119;
@@ -1449,6 +1451,14 @@ message PerceptualLossParameter {
   optional float epsilon = 2 [default = 1.0];
 }
 
+message StructualLossParameter {
+  optional uint32 num_landmark = 1 [default = 5];
+  optional float w0 = 2 [default = 1.0];
+  optional float w1 = 3 [default = 1.0];
+  optional float w2 = 4 [default = 1.0];
+  optional float w3 = 5 [default = 1.0];
+  
+}
 
 message ChannelExpandParameter {
   
@@ -1488,6 +1498,11 @@ message SpatialOperationParameter {
   optional string name = 7; // the name of this spatial operation
   optional float weight = 8 [default = 1]; 
   optional bool used = 9 [default = false];
+}
+
+message AveragePointParameter {
+
+  optional uint32 num_landmark = 1 [default = 5]; 
 }
 
 //Only for 2D convolution till now
