@@ -9,7 +9,7 @@ def flip(img, bbox, landmark):
     
     param:
     -img, the original image
-    -landmark, using absolute position
+    -landmark, using absolute coordinates
     """
     # horizontally flip the image
     img_flipped = cv2.flip(img.copy(), 1)
@@ -20,7 +20,7 @@ def flip(img, bbox, landmark):
     landmark_flipped = np.asarray([(img.shape[1]-x, y) for (x, y) in landmark])
     
     # exchange the right eye and left eye, right mouth corner and left mouth corner
-    # this depends
+    # however, this may not be needed
     landmark_flipped[[0, 1]] = landmark_flipped[[1, 0]]
     landmark_flipped[[3, 4]] = landmark_flipped[[4, 3]]
     return (img_flipped, bbox_flipped, landmark_flipped)
@@ -28,11 +28,11 @@ def flip(img, bbox, landmark):
 def rotate(img, bbox, landmark, alpha):
     """
     Given an image with bbox and landmark, rotate it with (angle in degrees) alpha and 
-    return rotated face with bbox and landmark (absolute position)
+    return rotated face with bbox and landmark (absolute coordinates)
 
     param:
     -img, the original image
-    -landmark, using absolute position
+    -landmark, using absolute coordinates
     -alpha, rotation angle in degrees
     """
     # get rotation matrix

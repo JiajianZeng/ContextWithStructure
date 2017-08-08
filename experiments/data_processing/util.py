@@ -12,7 +12,11 @@ def log(msg):
 
 def draw_landmark_in_original_image(img, bbox, landmark, file_path):
     """
-    Draw landmark in original image and save it.
+    Draw landmark in original image and write it to file.
+    param:
+    -img, of shape (h * w * c) and BGR format
+    -bbox, the bounding box to draw, absolute coordinates
+    -landmark, the landmarks to draw, of shape (N, 2) and absolute coordinates
     """
     img_copied = img.copy().astype(np.uint8)
     cv2.rectangle(img_copied, (int(bbox.left), int(bbox.top)), (int(bbox.right), int(bbox.bottom)), (0,0,255), 2)
@@ -23,9 +27,9 @@ def draw_landmark_in_original_image(img, bbox, landmark, file_path):
 
 def draw_landmark_in_cropped_face(face, landmark, file_path):
     """
-    Draw landmark in cropped face and save it.
-    
+    Draw landmark in cropped face and write it to file.
     param:
+    -face, of shape (h * w * c) and BRG format
     -landmark, using absolute position
     """
     face_copied = face.copy().astype(np.uint8)

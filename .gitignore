@@ -98,3 +98,15 @@ LOCK
 LOG*
 CURRENT
 MANIFEST-*
+
+# .jpg image
+experiments/data_processing/visualization/*.jpg
+experiments/data_processing/image_read_from_lmdb/*.jpg
+
+# log file
+*.log
+
+# lmdb files
+*.mdb
+
+
