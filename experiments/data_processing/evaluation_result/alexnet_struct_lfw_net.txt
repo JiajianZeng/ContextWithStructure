@@ -3,21 +3,21 @@ Network: alexnet_struct_deploy.prototxt
 Dataset: lfw_net_224x224_rgb_data 
 Number of test images: 3466 
 Iteration: 50000
-FPS: 372.688 
+FPS: 313.665 
 Normalizer: bi-ocular distance 
 Failure threshold: 0.100 
 Mean Error: 
-    Left Eye       = 0.064447 
-    Right Eye      = 0.063043 
-    Nose           = 0.087049 
-    Left Mouth     = 0.075166 
-    Right Mouth    = 0.080698 
+    Left Eye       = 0.035102 
+    Right Eye      = 0.034616 
+    Nose           = 0.043893 
+    Left Mouth     = 0.043190 
+    Right Mouth    = 0.043303 
 Failure: 
-    Left Eye       = 0.151183 
-    Right Eye      = 0.144547 
-    Nose           = 0.304385 
-    Left Mouth     = 0.231968 
-    Right Mouth    = 0.275245
+    Left Eye       = 0.023370 
+    Right Eye      = 0.025101 
+    Nose           = 0.044432 
+    Left Mouth     = 0.050490 
+    Right Mouth    = 0.049336
 
 
 ################## Summary ################## 
@@ -25,60 +25,60 @@ Network: alexnet_struct_deploy.prototxt
 Dataset: lfw_net_224x224_rgb_data 
 Number of test images: 3466 
 Iteration: 100000
-FPS: 363.694 
+FPS: 312.816 
 Normalizer: bi-ocular distance 
 Failure threshold: 0.100 
 Mean Error: 
-    Left Eye       = 0.065025 
-    Right Eye      = 0.063237 
-    Nose           = 0.086685 
-    Left Mouth     = 0.074529 
-    Right Mouth    = 0.081853 
+    Left Eye       = 0.034299 
+    Right Eye      = 0.033969 
+    Nose           = 0.042979 
+    Left Mouth     = 0.042367 
+    Right Mouth    = 0.042277 
 Failure: 
-    Left Eye       = 0.155511 
-    Right Eye      = 0.145413 
-    Nose           = 0.298327 
-    Left Mouth     = 0.231102 
-    Right Mouth    = 0.281881
+    Left Eye       = 0.022216 
+    Right Eye      = 0.022793 
+    Nose           = 0.039527 
+    Left Mouth     = 0.047894 
+    Right Mouth    = 0.047894
 
 ################## Summary ################## 
 Network: alexnet_struct_deploy.prototxt 
 Dataset: lfw_net_224x224_rgb_data 
 Number of test images: 3466 
 Iteration: 150000
-FPS: 361.418 
+FPS: 316.241 
 Normalizer: bi-ocular distance 
 Failure threshold: 0.100 
 Mean Error: 
-    Left Eye       = 0.064311 
-    Right Eye      = 0.062512 
-    Nose           = 0.086510 
-    Left Mouth     = 0.074457 
-    Right Mouth    = 0.081317 
+    Left Eye       = 0.034553 
+    Right Eye      = 0.034038 
+    Nose           = 0.043119 
+    Left Mouth     = 0.042531 
+    Right Mouth    = 0.042554 
 Failure: 
-    Left Eye       = 0.152626 
-    Right Eye      = 0.142816 
-    Nose           = 0.298038 
-    Left Mouth     = 0.231102 
-    Right Mouth    = 0.277265
+    Left Eye       = 0.021350 
+    Right Eye      = 0.024524 
+    Nose           = 0.040392 
+    Left Mouth     = 0.047894 
+    Right Mouth    = 0.047894
 
 ################## Summary ################## 
 Network: alexnet_struct_deploy.prototxt 
 Dataset: lfw_net_224x224_rgb_data 
 Number of test images: 3466 
 Iteration: 200000
-FPS: 371.888 
+FPS: 309.188 
 Normalizer: bi-ocular distance 
 Failure threshold: 0.100 
 Mean Error: 
-    Left Eye       = 0.064380 
-    Right Eye      = 0.062690 
-    Nose           = 0.086485 
-    Left Mouth     = 0.074477 
-    Right Mouth    = 0.081328 
+    Left Eye       = 0.034522 
+    Right Eye      = 0.034010 
+    Nose           = 0.043049 
+    Left Mouth     = 0.042406 
+    Right Mouth    = 0.042397 
 Failure: 
-    Left Eye       = 0.152337 
-    Right Eye      = 0.143104 
-    Nose           = 0.297461 
-    Left Mouth     = 0.231391 
-    Right Mouth    = 0.278419
+    Left Eye       = 0.021350 
+    Right Eye      = 0.024524 
+    Nose           = 0.040104 
+    Left Mouth     = 0.047028 
+    Right Mouth    = 0.048182

@@ -3,6 +3,7 @@ import numpy as np
 import time
 from numpy.linalg import norm
 import argparse
+import caffe
 
 from cnn_util import CNN
 from lmdb_util import read_image_from_lmdb, read_label_from_lmdb
@@ -49,7 +50,7 @@ def compute_normed_error(landmark_gt, landmark_pre, normalizer, num_landmarks=5,
         print normed_error
     return normed_error
      
-def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True):
+def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True):
     """
     Evalute a specified test dataset on a specific network.
     return:
@@ -64,6 +65,14 @@ def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, num_landmarks, network, caf
     landmarks_gt = read_label_from_lmdb(lmdb_landmark, np.iinfo(np.int32).max, print_info)
     # each element in list eyedists should be reshaped to (1) before usage
     eyedists = read_label_from_lmdb(lmdb_eyedist, np.iinfo(np.int32).max, print_info)
+
+    # load mean image file (.binaryproto)
+    blob = caffe.proto.caffe_pb2.BlobProto()
+    with open(mean_file, 'rb') as fd:
+        mean_file_data = fd.read()
+    blob.ParseFromString(mean_file_data)
+    mean_image = np.array(caffe.io.blobproto_to_array(blob))
+    print mean_image
     
     cnn = CNN(network, caffemodel, caffe_mode, gpu_id)
     normed_error = np.zeros((len(images), num_landmarks))
@@ -72,7 +81,8 @@ def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, num_landmarks, network, caf
     for i in range(len(images)):
         # expand (c, h, w)-> (1, c, h, w)
         # landmark_pre has shape (num_landmarks, 2)
-        landmark_pre = cnn.forward(np.expand_dims(images[i], 0), input_layer=input_layer, output_layer=output_layer)
+        # subtract mean image
+        landmark_pre = cnn.forward(np.subtract(np.expand_dims(images[i], 0), mean_image), input_layer=input_layer, output_layer=output_layer)
         '''
         # for debug, visualizing the 
         if i == 0:
@@ -107,6 +117,10 @@ def parse_args():
     # eyedist lmdb
     parser.add_argument('--lmdb_eyedist',
                         help='eyedist lmdb file',
+                        default=None, type=str)
+    # mean image file
+    parser.add_argument('--mean_file',
+                        help='mean image file, in general case, you should use mean image file which used by your training',
                         default=None, type=str)
     # number of landmarks
     parser.add_argument('--num_landmarks',
@@ -160,6 +174,7 @@ if __name__ == '__main__':
     lmdb_data = args.lmdb_data
     lmdb_landmark = args.lmdb_landmark
     lmdb_eyedist = args.lmdb_eyedist
+    mean_file = args.mean_file
     num_landmarks = args.num_landmarks
     network = args.network
     caffemodel = args.caffemodel
@@ -170,7 +185,7 @@ if __name__ == '__main__':
     output_layer = args.output_layer
     print_info = args.print_info
      
-    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info)    
+    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info)    
     # format evaluation info
     if num_landmarks == 5:
         eval_info = template_5_points % (os.path.basename(network), 
