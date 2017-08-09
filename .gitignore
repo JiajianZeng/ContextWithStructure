@@ -70,8 +70,6 @@ models/*
 *.binaryproto
 *leveldb
 *lmdb
-examples/DeepLandmark/dataset/*
-examples/DeepLandmark/train/*
 
 # build, distribute, and bins (+ python proto bindings)
 build
@@ -99,9 +97,6 @@ LOG*
 CURRENT
 MANIFEST-*
 
-# .jpg image
-experiments/data_processing/visualization/*.jpg
-experiments/data_processing/image_read_from_lmdb/*.jpg
 
 # log file
 *.log
