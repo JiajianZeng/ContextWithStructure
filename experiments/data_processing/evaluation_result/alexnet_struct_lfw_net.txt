@@ -1,0 +1,84 @@
+################## Summary ################## 
+Network: alexnet_struct_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 50000
+FPS: 372.688 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.064447 
+    Right Eye      = 0.063043 
+    Nose           = 0.087049 
+    Left Mouth     = 0.075166 
+    Right Mouth    = 0.080698 
+Failure: 
+    Left Eye       = 0.151183 
+    Right Eye      = 0.144547 
+    Nose           = 0.304385 
+    Left Mouth     = 0.231968 
+    Right Mouth    = 0.275245
+
+
+################## Summary ################## 
+Network: alexnet_struct_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 100000
+FPS: 363.694 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.065025 
+    Right Eye      = 0.063237 
+    Nose           = 0.086685 
+    Left Mouth     = 0.074529 
+    Right Mouth    = 0.081853 
+Failure: 
+    Left Eye       = 0.155511 
+    Right Eye      = 0.145413 
+    Nose           = 0.298327 
+    Left Mouth     = 0.231102 
+    Right Mouth    = 0.281881
+
+################## Summary ################## 
+Network: alexnet_struct_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 150000
+FPS: 361.418 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.064311 
+    Right Eye      = 0.062512 
+    Nose           = 0.086510 
+    Left Mouth     = 0.074457 
+    Right Mouth    = 0.081317 
+Failure: 
+    Left Eye       = 0.152626 
+    Right Eye      = 0.142816 
+    Nose           = 0.298038 
+    Left Mouth     = 0.231102 
+    Right Mouth    = 0.277265
+
+################## Summary ################## 
+Network: alexnet_struct_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 200000
+FPS: 371.888 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.064380 
+    Right Eye      = 0.062690 
+    Nose           = 0.086485 
+    Left Mouth     = 0.074477 
+    Right Mouth    = 0.081328 
+Failure: 
+    Left Eye       = 0.152337 
+    Right Eye      = 0.143104 
+    Nose           = 0.297461 
+    Left Mouth     = 0.231391 
+    Right Mouth    = 0.278419
