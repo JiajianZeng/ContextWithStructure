@@ -81,6 +81,7 @@ class BBox(object):
             self.right = bbox[1]
             self.top = bbox[2]
             self.bottom = bbox[3]
+            
         # bbox if of format (x1, y1, x2, y2)
         else:
             self.left = bbox[0]
@@ -125,7 +126,23 @@ class BBox(object):
         bottom = self.bottom + self.h * bottomR
         
         return BBox([left, right, top, bottom])
-    
+
+    # in order to make sure that when the face bounding box is incorrectly labeld, the coordinates, width and height computation
+    # is correct
+    def misc_clip(self, height, width):
+        if self.left < 0 or self.left > width:
+            self.left = 0
+        if self.right < 0 or self.right > width:
+            self.right = width - 1
+        if self.top < 0 or self.top > height:
+            self.top = 0
+        if self.bottom < 0 or self.bottom > height:
+            self.bottom = height - 1
+        self.x = self.left
+        self.y = self.top
+        self.w = self.right - self.left
+        self.h = self.bottom - self.top
+        
     # check is that bbox valid or not
     def valid(self, height, width):
         if self.left >= 0 and self.left <= width \

@@ -10,12 +10,13 @@ import argparse
 from util import log, draw_landmark_in_original_image, draw_landmark_in_cropped_face, getDataFromTxt,BBox
 from image_augmentation import flip, rotate
 from lmdb_util import read_image_from_lmdb
+import PIL.Image
 
 def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_size, augment=False, num_landmarks=5, le_index=0, re_index=1, rotation_angles=[5,-5], num_to_visualize=4):
     """
     Generate lmdb data.
     """
-    data = getDataFromTxt(meta_txt, img_base_dir)
+    data = getDataFromTxt(meta_txt, img_base_dir, num_landmarks=num_landmarks)
     imgs = []
     landmarks = []
     eyedists = []
@@ -28,14 +29,19 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
            channel = 1
            img = cv2.imread(img_path, 0)
         assert(img is not None)
-        log("process %s" % img_path)
+        log("process %d,  %s" % (i ,img_path))
 
         # enlarge face bounding box and crop, resize the face  
         enlarged_bbox = bbox.enlarge(0.05, 0.05, 0.05, 0.05)
         if not enlarged_bbox.valid(img.shape[0], img.shape[1]):
             enlarged_bbox = bbox
+        # make sure that when the face bounding box is incorrectly labeld,
+        # the coordinates, width and height computation is correct
+        enlarged_bbox.misc_clip(img.shape[0], img.shape[1])
+        
         face_original = img[int(enlarged_bbox.top):int(enlarged_bbox.bottom) + 1, int(enlarged_bbox.left):int(enlarged_bbox.right) + 1]
         face_original = cv2.resize(face_original, (img_size, img_size))
+             
         # normalize landmark to range [0, 1]
         landmark_original = enlarged_bbox.normalize_landmarks(landmark)
         # put into container
@@ -57,7 +63,7 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
         # data augmentation
         if augment:
             # horizontally flip 
-            face_flipped, bbox_flipped, landmark_flipped = flip(img, enlarged_bbox, landmark)
+            '''face_flipped, bbox_flipped, landmark_flipped = flip(img, enlarged_bbox, landmark)
             face_flipped = cv2.resize(face_flipped, (img_size, img_size))
             landmark_flipped = bbox_flipped.normalize_landmarks(landmark_flipped)
             
@@ -68,8 +74,8 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
             if i < num_to_visualize:
                 bbox = BBox([0, img_size, 0, img_size])
                 draw_landmark_in_cropped_face(face_flipped, bbox.denormalize_landmarks(landmark_flipped), os.path.join("visualization", "flipped_" + os.path.basename(img_path)))
-            
-            # rotate with probability 50%
+            '''
+            # rotate with probability 100%
             for alpha in rotation_angles:
                 if np.random.rand() > -1:
                     img_rotated, face_rotated, landmark_rotated = rotate(img, enlarged_bbox, \
@@ -87,7 +93,7 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
                         draw_landmark_in_cropped_face(face_rotated, bbox.denormalize_landmarks(landmark_rotated), os.path.join("visualization", "rotated_" + str(alpha) + "_" + os.path.basename(img_path)))
                 
                     # horizontally flip the rotated face
-                
+                    '''
                     face_flipped, bbox_flipped, landmark_flipped = flip(img_rotated, enlarged_bbox, enlarged_bbox.denormalize_landmarks(landmark_rotated))
                     face_flipped = cv2.resize(face_flipped, (img_size, img_size))
                     landmark_flipped = bbox_flipped.normalize_landmarks(landmark_flipped)
@@ -99,7 +105,7 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
                     if i < num_to_visualize:
                         bbox = BBox([0, img_size, 0, img_size])
                         draw_landmark_in_cropped_face(face_flipped, bbox.denormalize_landmarks(landmark_flipped), os.path.join("visualization", "flipped_rotated_" + str(alpha) + "_" + os.path.basename(img_path)))
-                
+                    '''
             
     assert(len(imgs) == len(landmarks) and len(imgs) == len(eyedists))
     log('number of total generated images: %s' % str(len(imgs)))
@@ -131,13 +137,6 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
             in_txn.put('{:0>10d}'.format(in_idx), im_dat.SerializeToString())  
     in_db.close() 
     
-    # compute image mean, augment only in generating traing data
-    # if augment:
-    #    cmd = "../../build/tools/compute_image_mean " + output + "_data " + output_dir + "/train_mean.binaryproto"
-    # else:
-    #    cmd = "../../build/tools/compute_image_mean " + output + "_data " + output_dir + "/test_mean.binaryproto"
-    # os.system(cmd)
-
     # write landmarks to lmdb
     in_db = lmdb.open(output + '_landmark', map_size=1e12)  
     count = 0  
@@ -165,7 +164,7 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
             in_txn.put("{:0>10d}".format(count), datum.SerializeToString())  
             count += 1  
     log('number of total images: %s' % str(len(imgs)))
-    lmdb_env.close()  
+    in_db.close()  
 
 def resize_existing_lmdb(original_lmdb_data, img_size, output_dir, lmdb_prefix):
     """
@@ -198,7 +197,50 @@ def resize_existing_lmdb(original_lmdb_data, img_size, output_dir, lmdb_prefix):
             im_dat = caffe.io.array_to_datum(im)  
             lmdb_txn.put('{:0>10d}'.format(idx), im_dat.SerializeToString())  
     lmdb_env.close()
+
+def subtract_mean_divide_std(lmdb2compute_mean_and_std, original_lmdb_data, output_dir, lmdb_prefix, is_color=True):
+    """
+    For a set of images, subtract the mean image from each image and divide it by the std image.
+
+    param:
+    -original_lmdb_data, path to the original lmdb data
+    -output_dir, where to save the generated lmdb data
+    -lmdb_prefix, prefix for the generated lmdb file
+    """
+    # each element in list imgs is of shape (c, h, w) and is in RGB order
+    imgs = read_image_from_lmdb(lmdb2compute_mean_and_std, np.iinfo(np.int32).max, '.', vis=False, print_info=True)
+    imgs = np.asarray(imgs)
+    if is_color:
+        print "computing mean image..."
+        m_r = np.mean(imgs[:, 0, :, :], axis=0)
+        m_g = np.mean(imgs[:, 1, :, :], axis=0)
+        m_b = np.mean(imgs[:, 2, :, :], axis=0)
+        print "finish computing mean image."
+        print "computing std image..."
+        std_r = np.std(imgs[:, 0, :, :], axis=0)
+        std_g = np.std(imgs[:, 1, :, :], axis=0)
+        std_b = np.std(imgs[:, 2, :, :], axis=0)
+        print "finish computing std image."
+
+    imgs2whitening = read_image_from_lmdb(original_lmdb_data, np.iinfo(np.int32).max, '.', vis=False, print_info=True)
+    imgs2whitening = np.asarray(imgs2whitening)
+    for i, _ in enumerate(imgs2whitening):
+        imgs2whitening[i][0] = (imgs2whitening[i][0] - m_r) / std_r
+        imgs2whitening[i][1] = (imgs2whitening[i][1] - m_g) / std_g
+        imgs2whitening[i][2] = (imgs2whitening[i][2] - m_b) / std_b
+        print "whitening %d/%d" % (i, len(imgs2whitening))
+    # create base dir if not existed
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    output = os.path.join(output_dir, lmdb_prefix)
+    log("generate %s" % output)
     
+    lmdb_env = lmdb.open(output + '_data', map_size=1e12)
+    with lmdb_env.begin(write=True) as lmdb_txn:
+        for idx, im in enumerate(imgs2whitening):  
+            im_dat = caffe.io.array_to_datum(im)  
+            lmdb_txn.put('{:0>10d}'.format(idx), im_dat.SerializeToString())  
+    lmdb_env.close()
     
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate lmdb file of the image as well as its corresponding landmark and eyedist.')
@@ -254,6 +296,14 @@ def parse_args():
     parser.add_argument('--resize_lmdb',
                          help='whether resize an existing lmdb to another size',
                          default=False, type=bool)
+    # whether whitening an existing lmdb
+    parser.add_argument('--whitening_lmdb', 
+                         help='whether whitening an existing lmdb', 
+                         default=False, type=bool)
+    # lmdb to compute mean and std
+    parser.add_argument('--lmdb2compute_mean_and_std',
+                         help='lmdb to compute mean and std',
+                         default=None, type=str)
     # the original lmdb data file
     parser.add_argument('--original_lmdb',
                          help='the original lmdb data file (resize_lmdb flag must be set to true)',
@@ -282,11 +332,15 @@ if __name__ == '__main__':
     rotation_angles = args.rotation_angles
     
     resize_lmdb = args.resize_lmdb
+    whitening_lmdb = args.whitening_lmdb
+    lmdb2compute_mean_and_std = args.lmdb2compute_mean_and_std
     original_lmdb = args.original_lmdb
     
     # resize an existing lmdb to another size
     if resize_lmdb and original_lmdb is not None:
         resize_existing_lmdb(original_lmdb, img_size, output_dir, lmdb_prefix)
+    elif whitening_lmdb and original_lmdb is not None:
+        subtract_mean_divide_std(lmdb2compute_mean_and_std, original_lmdb, output_dir, lmdb_prefix, is_color)
     # generate lmdb
     else:
         generate_lmdb(meta_file, img_base_dir, output_dir, lmdb_prefix, is_color, img_size, augment, num_landmarks, le_index, re_index, rotation_angles, num_to_visualize)
@@ -294,9 +348,12 @@ if __name__ == '__main__':
     ## train_txt = os.path.join('/share/disk/zengjiajian_dataset/LFW_NET', 'trainImageList.txt')
     ## generate_lmdb(train_txt, '/share/disk/zengjiajian_dataset/LFW_NET', 'dataset/train', 'lfw_net_224x224_rgb', True, 224, augment=True)
 
-    ##test_txt = os.path.join('/share/disk/zengjiajian_dataset/LFW_NET', 'testImageList.txt')
-    ##generate_lmdb(test_txt, '/share/disk/zengjiajian_dataset/LFW_NET', 'dataset/test', 'lfw_net_224x224_rgb', True, 224, augment=False)
+    ## test_txt = os.path.join('/share/disk/zengjiajian_dataset/LFW_NET', 'testImageList.txt')
+    ## generate_lmdb(test_txt, '/share/disk/zengjiajian_dataset/LFW_NET', 'dataset/test', 'lfw_net_224x224_rgb', True, 224, augment=False)
 
-    ##test_txt = os.path.join('/share/disk/zengjiajian_dataset/MTFL_TEST', 'correct_test.txt')
-    ##generate_lmdb(test_txt, '/share/disk/zengjiajian_dataset/MTFL_TEST', 'dataset/test', 'mtfl_test_224x224_rgb', True, 224, augment=False, num_to_visualize=15)
+    ## test_txt = os.path.join('/share/disk/zengjiajian_dataset/MTFL_TEST', 'correct_test.txt')
+    ## generate_lmdb(test_txt, '/share/disk/zengjiajian_dataset/MTFL_TEST', 'dataset/test', 'mtfl_test_224x224_rgb', True, 224, augment=False, num_to_visualize=15)
+
+    ## train_txt = os.path.join('/share/disk/zengjiajian_dataset/AFLW_FULL', 'trainImageList.txt')
+    ## generate_lmdb(train_txt, '/share/disk/zengjiajian_dataset/AFLW_FULL', 'dataset/train', 'aflw_full_224x224_rgb', True, 224, augment=True, num_landmarks=19, num_to_visualize=15)
     # Done

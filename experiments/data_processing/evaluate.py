@@ -18,13 +18,13 @@ Number of test images: %d
 FPS: %.03f 
 Normalizer: %s 
 Failure threshold: %.03f 
-Mean Error: 
+Mean Error: %f
     Left Eye       = %f 
     Right Eye      = %f 
     Nose           = %f 
     Left Mouth     = %f 
     Right Mouth    = %f 
-Failure: 
+Failure: %f
     Left Eye       = %f 
     Right Eye      = %f 
     Nose           = %f 
@@ -194,6 +194,8 @@ if __name__ == '__main__':
                                          fps, 
                                          'bi-ocular distance',
                                          threshold, 
+                                         normed_mean_error.mean(0),
                                          normed_mean_error[0], normed_mean_error[1], normed_mean_error[2], normed_mean_error[3], normed_mean_error[4],
+                                         failure_rate.mean(0),
                                          failure_rate[0], failure_rate[1], failure_rate[2], failure_rate[3], failure_rate[4])
     print eval_info
