@@ -32,6 +32,57 @@ Failure: %f
     Right Mouth    = %f 
 '''
 
+template_19_points = \
+'''################## Summary ################## 
+Network: %s 
+Dataset: %s 
+Number of test images: %d 
+FPS: %.03f 
+Normalizer: %s 
+Failure threshold: %.03f 
+Mean Error: %f
+    k1 = %f 
+    k2 = %f 
+    k3 = %f 
+    k4 = %f 
+    k5 = %f 
+    k6 = %f 
+    k7 = %f 
+    k8 = %f 
+    k9 = %f 
+    k10 = %f 
+    k11 = %f 
+    k12 = %f
+    k13 = %f  
+    k14 = %f 
+    k15 = %f 
+    k16 = %f 
+    k17 = %f 
+    k18 = %f 
+    k19 = %f 
+Failure: %f
+    k1 = %f 
+    k2 = %f 
+    k3 = %f 
+    k4 = %f 
+    k5 = %f 
+    k6 = %f 
+    k7 = %f 
+    k8 = %f 
+    k9 = %f 
+    k10 = %f 
+    k11 = %f 
+    k12 = %f
+    k13 = %f  
+    k14 = %f 
+    k15 = %f 
+    k16 = %f 
+    k17 = %f 
+    k18 = %f 
+    k19 = %f 
+'''
+
+
 def compute_normed_error(landmark_gt, landmark_pre, normalizer, num_landmarks=5, print_info=True):
     """
     Compute normalized error for a test sample.
@@ -49,8 +100,30 @@ def compute_normed_error(landmark_gt, landmark_pre, normalizer, num_landmarks=5,
         print landmark_pre
         print normed_error
     return normed_error
+
+def compute_normed_error_by_width(landmark_gt, landmark_pre, img_size, num_landmarks=5, print_info=True):
+    """
+    Compute normalized error for a test sample normalized by bounding box width.
+    param:
+    -landmark_gt, of shape (N, 2)
+    -landmark_pre, of shape (N, 2)
+    -img_size, of shape (2)
+    """
+    normed_error = np.zeros(num_landmarks)
+    for i in range(num_landmarks):
+        # L2-norm
+        gt = landmark_gt[i] * img_size
+        pre = landmark_pre[i] * img_size
+        normed_error[i] = norm(gt - pre) / img_size[0]
+    if print_info:
+        print '##### ground-truth, predicted landmark, image size and normalized error #####'
+        print landmark_gt
+        print landmark_pre
+        print img_size
+        print normed_error
+    return normed_error
      
-def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True):
+def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True, use_width=False):
     """
     Evalute a specified test dataset on a specific network.
     return:
@@ -93,7 +166,10 @@ def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, n
             bbox = BBox([0, img.shape[1], 0, img.shape[0]]) 
             draw_landmark_in_cropped_face(img, bbox.denormalize_landmarks(landmark_pre), '0.jpg')
         '''
-        normed_error[i] = compute_normed_error(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, eyedists[i].reshape(1)[0], num_landmarks, print_info)
+        if use_width:
+            normed_error[i] = compute_normed_error_by_width(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, eyedists[i].reshape(2), num_landmarks, print_info)
+        else:
+            normed_error[i] = compute_normed_error(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, eyedists[i].reshape(2), num_landmarks, print_info)
     t = time.clock() - t
     
     # failure rate
@@ -160,6 +236,10 @@ def parse_args():
     parser.add_argument('--print_info',
                         help='print stat info or not',
                         default=True, type=bool)
+    # normalized by bounding box width or not
+    parser.add_argument('--use_width',
+                        help='normalized by bounding box width or not',
+                        default=False, type=bool)
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
@@ -184,8 +264,9 @@ if __name__ == '__main__':
     input_layer = args.input_layer
     output_layer = args.output_layer
     print_info = args.print_info
+    use_width = args.use_width
      
-    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info)    
+    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info, use_width=use_width)    
     # format evaluation info
     if num_landmarks == 5:
         eval_info = template_5_points % (os.path.basename(network), 
@@ -198,4 +279,21 @@ if __name__ == '__main__':
                                          normed_mean_error[0], normed_mean_error[1], normed_mean_error[2], normed_mean_error[3], normed_mean_error[4],
                                          failure_rate.mean(0),
                                          failure_rate[0], failure_rate[1], failure_rate[2], failure_rate[3], failure_rate[4])
+    elif num_landmarks == 19:
+        eval_info = template_19_points % (os.path.basename(network), 
+                                         os.path.basename(lmdb_data),
+                                         num_images, 
+                                         fps, 
+                                         'bi-ocular distance',
+                                         threshold, 
+                                         normed_mean_error.mean(0),
+                                         normed_mean_error[0], normed_mean_error[1], normed_mean_error[2], normed_mean_error[3], normed_mean_error[4],
+                                         normed_mean_error[5], normed_mean_error[6], normed_mean_error[7], normed_mean_error[8], normed_mean_error[9],
+                                         normed_mean_error[10], normed_mean_error[11], normed_mean_error[12], normed_mean_error[13], normed_mean_error[14],
+                                         normed_mean_error[15], normed_mean_error[16], normed_mean_error[17], normed_mean_error[18],
+                                         failure_rate.mean(0),
+                                         failure_rate[0], failure_rate[1], failure_rate[2], failure_rate[3], failure_rate[4],
+                                         failure_rate[5], failure_rate[6], failure_rate[7], failure_rate[8], failure_rate[9],
+                                         failure_rate[10], failure_rate[11], failure_rate[12], failure_rate[13], failure_rate[14],
+                                         failure_rate[15], failure_rate[16], failure_rate[17], failure_rate[18])
     print eval_info
