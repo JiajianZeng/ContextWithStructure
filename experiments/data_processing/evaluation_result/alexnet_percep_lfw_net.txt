@@ -82,3 +82,132 @@ Failure:
     Left Mouth     = 0.043566 
     Right Mouth    = 0.042412
 
+---------------------------------------------------------------------
+New support for bi-ocular distance normalization metric
+alexnet_percep_lfw_net_224x224_rgb_iter_#.caffemodel
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 200000
+FPS: 292.984 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036730
+    Left Eye       = 0.030342 
+    Right Eye      = 0.030211 
+    Nose           = 0.039615 
+    Left Mouth     = 0.040522 
+    Right Mouth    = 0.042962 
+Failure: 0.033987
+    Left Eye       = 0.020773 
+    Right Eye      = 0.019619 
+    Nose           = 0.033756 
+    Left Mouth     = 0.047894 
+    Right Mouth    = 0.047894
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 190000
+FPS: 297.766 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036722
+    Left Eye       = 0.030389 
+    Right Eye      = 0.030332 
+    Nose           = 0.039422 
+    Left Mouth     = 0.040441 
+    Right Mouth    = 0.043029 
+Failure: 0.033814
+    Left Eye       = 0.020773 
+    Right Eye      = 0.019908 
+    Nose           = 0.033179 
+    Left Mouth     = 0.047894 
+    Right Mouth    = 0.047317
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 180000
+FPS: 293.729 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036769
+    Left Eye       = 0.030322 
+    Right Eye      = 0.030336 
+    Nose           = 0.039619 
+    Left Mouth     = 0.040355 
+    Right Mouth    = 0.043214 
+Failure: 0.033699
+    Left Eye       = 0.020485 
+    Right Eye      = 0.019619 
+    Nose           = 0.033756 
+    Left Mouth     = 0.047605 
+    Right Mouth    = 0.047028
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 170000
+FPS: 297.256 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036626
+    Left Eye       = 0.030255 
+    Right Eye      = 0.030150 
+    Nose           = 0.039505 
+    Left Mouth     = 0.040328 
+    Right Mouth    = 0.042891 
+Failure: 0.033699
+    Left Eye       = 0.021062 
+    Right Eye      = 0.019619 
+    Nose           = 0.033179 
+    Left Mouth     = 0.047894 
+    Right Mouth    = 0.046740
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 160000
+FPS: 297.001 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036660
+    Left Eye       = 0.030541 
+    Right Eye      = 0.030290 
+    Nose           = 0.039327 
+    Left Mouth     = 0.040382 
+    Right Mouth    = 0.042759 
+Failure: 0.033583
+    Left Eye       = 0.020773 
+    Right Eye      = 0.019331 
+    Nose           = 0.032891 
+    Left Mouth     = 0.047605 
+    Right Mouth    = 0.047317
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: correct_lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 150000
+FPS: 299.827 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.036696
+    Left Eye       = 0.030191 
+    Right Eye      = 0.030109 
+    Nose           = 0.039350 
+    Left Mouth     = 0.040577 
+    Right Mouth    = 0.043252 
+Failure: 0.033410
+    Left Eye       = 0.020485 
+    Right Eye      = 0.019042 
+    Nose           = 0.032891 
+    Left Mouth     = 0.047605 
+    Right Mouth    = 0.047028 
+

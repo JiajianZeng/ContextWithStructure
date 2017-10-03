@@ -3,6 +3,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "boost/scoped_ptr.hpp"
 #include "gflags/gflags.h"
@@ -66,6 +67,7 @@ int main(int argc, char** argv) {
     sum_blob.add_data(0.);
   }
   LOG(INFO) << "Starting Iteration";
+  std::cout << "Starting Iteration" << std::endl;
   while (cursor->valid()) {
     Datum datum;
     datum.ParseFromString(cursor->value());
@@ -91,12 +93,14 @@ int main(int argc, char** argv) {
     ++count;
     if (count % 10000 == 0) {
       LOG(INFO) << "Processed " << count << " files.";
+      std::cout << "Processed " << count << " files." << std::endl;
     }
     cursor->Next();
   }
 
   if (count % 10000 != 0) {
     LOG(INFO) << "Processed " << count << " files.";
+    std::cout << "Processed " << count << " files." << std::endl;
   }
   for (int i = 0; i < sum_blob.data_size(); ++i) {
     sum_blob.set_data(i, sum_blob.data(i) / count);
@@ -104,17 +108,20 @@ int main(int argc, char** argv) {
   // Write to disk
   if (argc == 3) {
     LOG(INFO) << "Write to " << argv[2];
+    std::cout << "Write to " << argv[2] << std::endl;
     WriteProtoToBinaryFile(sum_blob, argv[2]);
   }
   const int channels = sum_blob.channels();
   const int dim = sum_blob.height() * sum_blob.width();
   std::vector<float> mean_values(channels, 0.0);
   LOG(INFO) << "Number of channels: " << channels;
+  std::cout << "NUmber of channels: " << channels << std::endl;
   for (int c = 0; c < channels; ++c) {
     for (int i = 0; i < dim; ++i) {
       mean_values[c] += sum_blob.data(dim * c + i);
     }
     LOG(INFO) << "mean_value channel [" << c << "]:" << mean_values[c] / dim;
+    std::cout << "mean_value channel [" << c << "];" << mean_values[c] / dim << std::endl;
   }
 #else
   LOG(FATAL) << "This tool requires OpenCV; compile with USE_OPENCV.";

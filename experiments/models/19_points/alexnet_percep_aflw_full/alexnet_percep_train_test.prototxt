@@ -1,0 +1,744 @@
+name: "alexnet_percep_aflw_full_224x224_rgb"
+
+# Use AlexNet to predict the shape (5 landmarks)
+# The net will be updated
+######### Shape Prediction Network #########
+layer {
+  name: "lmdb_data"
+  type: "Data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_data"
+    batch_size: 64
+    backend: LMDB
+  }
+  transform_param {
+    mean_file: "./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_mean.binaryproto"
+  }
+}
+layer {
+  name: "lmdb_label"
+  type: "Data"
+  top: "landmark"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_landmark"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+
+layer {
+  name: "lmdb_data"
+  type: "Data"
+  top: "data"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/aflw_full_224x224_rgb_data"
+    batch_size: 64
+    backend: LMDB
+  }
+  transform_param {
+    mean_file: "./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_mean.binaryproto"
+  }
+}
+
+layer {
+  name: "lmdb_label"
+  type: "Data"
+  top: "landmark"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/aflw_full_224x224_rgb_landmark"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+
+layer {
+  name: "lmdb_eyedist"
+  type: "Data"
+  top: "eyedist"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/aflw_full_224x224_rgb_eyedist"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+# alexnet network definition
+layer {
+  name: "lm_conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "lm_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lm_relu1"
+  type: "ReLU"
+  bottom: "lm_conv1"
+  top: "lm_conv1"
+}
+layer {
+  name: "lm_norm1"
+  type: "LRN"
+  bottom: "lm_conv1"
+  top: "lm_norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "lm_pool1"
+  type: "Pooling"
+  bottom: "lm_norm1"
+  top: "lm_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "lm_conv2"
+  type: "Convolution"
+  bottom: "lm_pool1"
+  top: "lm_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "lm_relu2"
+  type: "ReLU"
+  bottom: "lm_conv2"
+  top: "lm_conv2"
+}
+layer {
+  name: "lm_norm2"
+  type: "LRN"
+  bottom: "lm_conv2"
+  top: "lm_norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "lm_pool2"
+  type: "Pooling"
+  bottom: "lm_norm2"
+  top: "lm_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "lm_conv3"
+  type: "Convolution"
+  bottom: "lm_pool2"
+  top: "lm_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lm_relu3"
+  type: "ReLU"
+  bottom: "lm_conv3"
+  top: "lm_conv3"
+}
+layer {
+  name: "lm_conv4"
+  type: "Convolution"
+  bottom: "lm_conv3"
+  top: "lm_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "lm_relu4"
+  type: "ReLU"
+  bottom: "lm_conv4"
+  top: "lm_conv4"
+}
+layer {
+  name: "lm_conv5"
+  type: "Convolution"
+  bottom: "lm_conv4"
+  top: "lm_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "lm_relu5"
+  type: "ReLU"
+  bottom: "lm_conv5"
+  top: "lm_conv5"
+}
+layer {
+  name: "lm_pool5"
+  type: "Pooling"
+  bottom: "lm_conv5"
+  top: "lm_pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "lm_fc6"
+  type: "InnerProduct"
+  bottom: "lm_pool5"
+  top: "lm_fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "lm_relu6"
+  type: "ReLU"
+  bottom: "lm_fc6"
+  top: "lm_fc6"
+}
+layer {
+  name: "lm_drop6"
+  type: "Dropout"
+  bottom: "lm_fc6"
+  top: "lm_fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "lm_fc7"
+  type: "InnerProduct"
+  bottom: "lm_fc6"
+  top: "lm_fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "lm_relu7"
+  type: "ReLU"
+  bottom: "lm_fc7"
+  top: "lm_fc7"
+}
+layer {
+  name: "lm_drop7"
+  type: "Dropout"
+  bottom: "lm_fc7"
+  top: "lm_fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "lm_fc8"
+  type: "InnerProduct"
+  bottom: "lm_fc7"
+  top: "lm_fc8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 38
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "performance"
+  type: "FacialLandmarkPerformance"
+  bottom: "landmark"
+  bottom: "lm_fc8"
+  bottom: "eyedist"
+  top: "average_error"
+  top: "false_rate"
+  
+  facial_landmark_performance_param {
+    num_landmark: 19
+    error_threshold: 0.1
+  }
+  include {
+    phase: TEST
+  }
+}
+
+layer {
+  name: "euclidean_loss"
+  type: "EuclideanLoss"
+  bottom: "landmark"
+  bottom: "lm_fc8"
+  top: "euclidean_loss"
+}
+
+# Use pre-trained AlexNet (origin in image classification) to extract context information 
+# around the patch formed with predicted landmark being its centre.
+# Extracted context information can be used to compute the "Perceptual loss" defined.
+# The net will not be updated.
+######### Patch Semantic Network #########
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "norm1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "conv2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "norm2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+# silence pool5 
+layer {
+  name: "silence_pool5"
+  type: "Silence"
+  bottom: "pool5"
+}
+
+######### patch_semantic_layer for computing partial derivatives #########
+layer {
+  name: "p_s_alexnet"
+  type: "PatchSemantic"
+  bottom: "landmark"
+  bottom: "lm_fc8"
+  bottom: "pool1"
+  bottom: "pool2"
+  bottom: "conv4"
+  top: "partial_derivatives"
+  
+  patch_semantic_param {
+    num_landmark: 19
+    cross_channel: AVE
+    image_w: 224
+    image_h: 224
+    patch_w: 12
+    patch_h: 12
+	
+    # sp param of layer conv1
+    spatial_operation_param {
+      name: "conv1"
+      kernel_size: 11
+      stride: 4
+      weight: 0
+      used: false
+    }
+    # sp param of layer pool1	
+    spatial_operation_param {
+      name: "pool1"
+      kernel_size: 3
+      stride: 2
+      weight: 1
+      used: true
+    }
+    # sp param of layer conv2
+    spatial_operation_param {
+      name: "conv2"
+      kernel_size: 5
+      stride: 1
+      weight: 0
+      used: false
+    }
+    # sp param of layer pool2
+    spatial_operation_param {
+      name: "pool2"
+      kernel_size: 3
+      stride: 2
+      weight: 1
+      used: true
+    }
+    # sp param of layer conv3
+    spatial_operation_param {
+      name: "conv3"
+      kernel_size: 3
+      stride: 1
+      weight: 0
+      used: false
+    }
+    # sp param of layer conv4
+    spatial_operation_param {
+      name: "conv4"
+      kernel_size: 3
+      stride: 1
+      weight: 1
+      used: true
+    }
+    # sp param of layer conv5
+    spatial_operation_param {
+      name: "conv5"
+      kernel_size: 3
+      stride: 1
+      weight: 0
+      used: false
+    }
+    # sp param of layer pool5
+    spatial_operation_param {
+      name: "pool5"
+      kernel_size: 3
+      stride: 2
+      weight: 1
+      used: false
+    }
+  }
+}
+
+######### Eltwise layer for computing residuals #########
+layer {
+  name: "eltwise_sub"
+  type: "Eltwise"
+  bottom: "lm_fc8"
+  bottom: "landmark"
+  top: "residuals"
+  
+  eltwise_param {
+    operation: SUM
+	coeff: 1
+	coeff: -1
+  }
+}
+
+######### perceptual_loss_layer #########
+layer {
+  name: "perceptual_loss"
+  type: "PerceptualLoss"
+  bottom: "residuals"
+  bottom: "partial_derivatives"
+  top: "perceptual_loss"
+  loss_weight: 0.01
+  perceptual_loss_param { 
+    num_landmark: 19
+    epsilon: 0.001
+  }
+}

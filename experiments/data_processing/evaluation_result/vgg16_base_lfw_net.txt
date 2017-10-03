@@ -1,0 +1,484 @@
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 100000
+Setting: lrelu_0.1
+FPS: 120.767 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.054902
+    Left Eye       = 0.046566 
+    Right Eye      = 0.047287 
+    Nose           = 0.065213 
+    Left Mouth     = 0.057389 
+    Right Mouth    = 0.058054 
+Failure: 0.109117
+    Left Eye       = 0.067224 
+    Right Eye      = 0.070110 
+    Nose           = 0.166186 
+    Left Mouth     = 0.116272 
+    Right Mouth    = 0.125793
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 110000
+Setting: lrelu_0.1
+FPS: 121.956 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.055029
+    Left Eye       = 0.046694 
+    Right Eye      = 0.047302 
+    Nose           = 0.065356 
+    Left Mouth     = 0.057541 
+    Right Mouth    = 0.058250 
+Failure: 0.110098
+    Left Eye       = 0.066647 
+    Right Eye      = 0.070110 
+    Nose           = 0.167917 
+    Left Mouth     = 0.117715 
+    Right Mouth    = 0.128102
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 120000
+Setting: lrelu_0.1
+FPS: 119.806 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.055019
+    Left Eye       = 0.046676 
+    Right Eye      = 0.047264 
+    Nose           = 0.065328 
+    Left Mouth     = 0.057557 
+    Right Mouth    = 0.058272 
+Failure: 0.109694
+    Left Eye       = 0.066936 
+    Right Eye      = 0.069244 
+    Nose           = 0.166763 
+    Left Mouth     = 0.117715 
+    Right Mouth    = 0.127813
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 150000
+Setting: lrelu_0.1
+FPS: 120.809 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.054994
+    Left Eye       = 0.046664 
+    Right Eye      = 0.047227 
+    Nose           = 0.065323 
+    Left Mouth     = 0.057531 
+    Right Mouth    = 0.058223 
+Failure: 0.109406
+    Left Eye       = 0.066647 
+    Right Eye      = 0.069244 
+    Nose           = 0.165897 
+    Left Mouth     = 0.117715 
+    Right Mouth    = 0.127525
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 180000
+Setting: lrelu_0.1
+FPS: 123.170 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.054975
+    Left Eye       = 0.046659 
+    Right Eye      = 0.047236 
+    Nose           = 0.065302 
+    Left Mouth     = 0.057492 
+    Right Mouth    = 0.058186 
+Failure: 0.109521
+    Left Eye       = 0.066647 
+    Right Eye      = 0.069244 
+    Nose           = 0.166186 
+    Left Mouth     = 0.117715 
+    Right Mouth    = 0.127813
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 200000
+Setting: lrelu_0.1
+FPS: 125.353 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.054974
+    Left Eye       = 0.046658 
+    Right Eye      = 0.047242 
+    Nose           = 0.065303 
+    Left Mouth     = 0.057483 
+    Right Mouth    = 0.058184 
+Failure: 0.109579
+    Left Eye       = 0.066647 
+    Right Eye      = 0.069821 
+    Nose           = 0.165897 
+    Left Mouth     = 0.117715 
+    Right Mouth    = 0.127813 
+
+---------------------------------------------------------------------
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 50000
+Setting: BN
+FPS: 83.902 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.055134
+    Left Eye       = 0.046547 
+    Right Eye      = 0.051196 
+    Nose           = 0.066063 
+    Left Mouth     = 0.054652 
+    Right Mouth    = 0.057210 
+Failure: 0.117311
+    Left Eye       = 0.076457 
+    Right Eye      = 0.092902 
+    Nose           = 0.175995 
+    Left Mouth     = 0.111079 
+    Right Mouth    = 0.130121
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 60000
+Setting: BN
+FPS: 83.498 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.033608
+    Left Eye       = 0.030244 
+    Right Eye      = 0.029386 
+    Nose           = 0.033927 
+    Left Mouth     = 0.037029 
+    Right Mouth    = 0.037452 
+Failure: 0.027236
+    Left Eye       = 0.021062 
+    Right Eye      = 0.022504 
+    Nose           = 0.022216 
+    Left Mouth     = 0.034622 
+    Right Mouth    = 0.035776 
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 70000
+Setting: BN
+FPS: 81.765 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.035193
+    Left Eye       = 0.030805 
+    Right Eye      = 0.031642 
+    Nose           = 0.037339 
+    Left Mouth     = 0.038015 
+    Right Mouth    = 0.038165 
+Failure: 0.030698
+    Left Eye       = 0.022504 
+    Right Eye      = 0.026255 
+    Nose           = 0.029429 
+    Left Mouth     = 0.039238 
+    Right Mouth    = 0.036065
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 80000
+Setting: BN
+FPS: 81.765 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034707
+    Left Eye       = 0.030565 
+    Right Eye      = 0.029631 
+    Nose           = 0.036161 
+    Left Mouth     = 0.038100 
+    Right Mouth    = 0.039076 
+Failure: 0.029083
+    Left Eye       = 0.019908 
+    Right Eye      = 0.023081 
+    Nose           = 0.028275 
+    Left Mouth     = 0.036353 
+    Right Mouth    = 0.037796
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 90000
+Setting: BN
+FPS: 81.342 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034303
+    Left Eye       = 0.030544 
+    Right Eye      = 0.029363 
+    Nose           = 0.035168 
+    Left Mouth     = 0.038027 
+    Right Mouth    = 0.038413 
+Failure: 0.028852
+    Left Eye       = 0.020773 
+    Right Eye      = 0.022793 
+    Nose           = 0.024524 
+    Left Mouth     = 0.036065 
+    Right Mouth    = 0.040104
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 100000
+Setting: BN
+FPS: 80.943 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.035601
+    Left Eye       = 0.031074 
+    Right Eye      = 0.031488 
+    Nose           = 0.035790 
+    Left Mouth     = 0.040538 
+    Right Mouth    = 0.039115 
+Failure: 0.032602
+    Left Eye       = 0.022504 
+    Right Eye      = 0.027409 
+    Nose           = 0.029429 
+    Left Mouth     = 0.045009 
+    Right Mouth    = 0.038661
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 110000
+Setting: BN
+FPS: 81.611 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034128
+    Left Eye       = 0.029836 
+    Right Eye      = 0.029456 
+    Nose           = 0.034433 
+    Left Mouth     = 0.038186 
+    Right Mouth    = 0.038729 
+Failure: 0.028217
+    Left Eye       = 0.019331 
+    Right Eye      = 0.021350 
+    Nose           = 0.022793 
+    Left Mouth     = 0.039527 
+    Right Mouth    = 0.038084
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 120000
+Setting: BN
+FPS: 80.567 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034433
+    Left Eye       = 0.030246 
+    Right Eye      = 0.029700 
+    Nose           = 0.034789 
+    Left Mouth     = 0.038290 
+    Right Mouth    = 0.039141 
+Failure: 0.028217
+    Left Eye       = 0.019908 
+    Right Eye      = 0.020485 
+    Nose           = 0.023081 
+    Left Mouth     = 0.038950 
+    Right Mouth    = 0.038661
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 130000
+Setting: BN
+FPS: 81.266 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034299
+    Left Eye       = 0.029940 
+    Right Eye      = 0.029427 
+    Nose           = 0.034376 
+    Left Mouth     = 0.039004 
+    Right Mouth    = 0.038746 
+Failure: 0.028736
+    Left Eye       = 0.019619 
+    Right Eye      = 0.020485 
+    Nose           = 0.023081 
+    Left Mouth     = 0.041546 
+    Right Mouth    = 0.038950
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 140000
+Setting: BN
+FPS: 81.057 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034625
+    Left Eye       = 0.030114 
+    Right Eye      = 0.029637 
+    Nose           = 0.035100 
+    Left Mouth     = 0.039087 
+    Right Mouth    = 0.039186 
+Failure: 0.028736
+    Left Eye       = 0.018754 
+    Right Eye      = 0.022504 
+    Nose           = 0.023370 
+    Left Mouth     = 0.041835 
+    Right Mouth    = 0.037219
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 150000
+Setting: BN
+FPS: 81.591 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034738
+    Left Eye       = 0.030550 
+    Right Eye      = 0.029903 
+    Nose           = 0.034891 
+    Left Mouth     = 0.038973 
+    Right Mouth    = 0.039373 
+Failure: 0.030121
+    Left Eye       = 0.020485 
+    Right Eye      = 0.022504 
+    Nose           = 0.025389 
+    Left Mouth     = 0.041835 
+    Right Mouth    = 0.040392
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 160000
+Setting: BN
+FPS: 81.304 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034515
+    Left Eye       = 0.030178 
+    Right Eye      = 0.029606 
+    Nose           = 0.034910 
+    Left Mouth     = 0.038894 
+    Right Mouth    = 0.038985 
+Failure: 0.028621
+    Left Eye       = 0.018754 
+    Right Eye      = 0.021927 
+    Nose           = 0.024524 
+    Left Mouth     = 0.039815 
+    Right Mouth    = 0.038084 
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 170000
+Setting: BN
+FPS: 81.880 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034416
+    Left Eye       = 0.030051 
+    Right Eye      = 0.029426 
+    Nose           = 0.034881 
+    Left Mouth     = 0.038701 
+    Right Mouth    = 0.039019 
+Failure: 0.028217
+    Left Eye       = 0.019331 
+    Right Eye      = 0.021350 
+    Nose           = 0.024524 
+    Left Mouth     = 0.038950 
+    Right Mouth    = 0.036930
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 180000
+Setting: BN
+FPS: 81.419 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034434
+    Left Eye       = 0.030063 
+    Right Eye      = 0.029566 
+    Nose           = 0.034887 
+    Left Mouth     = 0.038641 
+    Right Mouth    = 0.039012 
+Failure: 0.028679
+    Left Eye       = 0.019331 
+    Right Eye      = 0.021639 
+    Nose           = 0.025101 
+    Left Mouth     = 0.039527 
+    Right Mouth    = 0.037796
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 190000
+Setting: BN
+FPS: 81.495 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034486
+    Left Eye       = 0.030167 
+    Right Eye      = 0.029533 
+    Nose           = 0.034885 
+    Left Mouth     = 0.038875 
+    Right Mouth    = 0.038972 
+Failure: 0.028852
+    Left Eye       = 0.019331 
+    Right Eye      = 0.022216 
+    Nose           = 0.024235 
+    Left Mouth     = 0.040681 
+    Right Mouth    = 0.037796
+
+################## Summary ################## 
+Network: vgg16_base_deploy.prototxt 
+Dataset: lfw_net_224x224_rgb_data 
+Number of test images: 3466 
+Iteration: 200000
+Setting: BN
+FPS: 80.887 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.034547
+    Left Eye       = 0.030167 
+    Right Eye      = 0.029638 
+    Nose           = 0.035006 
+    Left Mouth     = 0.038796 
+    Right Mouth    = 0.039126 
+Failure: 0.028909
+    Left Eye       = 0.019331 
+    Right Eye      = 0.021927 
+    Nose           = 0.025101 
+    Left Mouth     = 0.039527 
+    Right Mouth    = 0.038661

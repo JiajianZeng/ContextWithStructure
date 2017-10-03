@@ -1,0 +1,502 @@
+name: "F1_struct_lfw_net_224x224_rgb"
+
+# train data
+layer {
+  name: "lmdb_data"
+  type: "Data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_data"
+    batch_size: 32
+    backend: LMDB
+  }
+  transform_param {
+    mean_file: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_mean.binaryproto"
+  }
+}
+
+layer {
+  name: "lmdb_landmark"
+  type: "Data"
+  top: "landmark"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_landmark"
+    batch_size: 32
+    backend: LMDB
+  }
+}
+
+# root means the geometry center of the five landmarks
+layer {
+  name: "lmdb_root"
+  type: "AveragePoint"
+  bottom: "landmark"
+  top: "root"
+  propagate_down: false
+  include {
+    phase: TRAIN
+  }
+  average_point_param {
+    num_landmark: 5
+  }  
+ 
+}
+
+# test data
+layer {
+  name: "lmdb_data_test"
+  type: "Data"
+  top: "data"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_data"
+    batch_size: 64
+    backend: LMDB
+  }
+  transform_param {
+    mean_file: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_mean.binaryproto"
+  }
+}
+
+layer {
+  name: "lmdb_landmark_test"
+  type: "Data"
+  top: "landmark"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_landmark"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+
+layer {
+  name: "lmdb_root"
+  type: "AveragePoint"
+  bottom: "landmark"
+  top: "root"
+  propagate_down: false
+  include {
+    phase: TEST
+  }
+
+  average_point_param {
+    num_landmark: 5
+  }  
+ 
+}
+
+layer {
+  name: "lmdb_eyedist_test"
+  type: "Data"
+  top: "eyedist"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_eyedist"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+
+# network architecture
+layer {
+    name: "lm_conv1"
+    type: "Convolution"
+    bottom: "data"
+    top: "lm_conv1"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 20
+        kernel_size: 4
+        weight_filler {
+            type: "gaussian"
+            std: 0.01
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+#layer {
+#  bottom: "lm_conv1"
+#  top: "lm_conv1"
+#  name: "bn_lm_conv1"
+#  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+#}
+
+#layer {
+#  bottom: "lm_conv1"
+#  top: "lm_conv1"
+#  name: "scale_lm_conv1"
+#  type: "Scale"
+#  scale_param {
+#    bias_term: true
+#  }
+#}
+
+layer {
+    name: "lm_relu1"
+    type: "ReLU"
+    bottom: "lm_conv1"
+    top: "lm_conv1"
+}
+
+layer {
+    name: "lm_pool1"
+    type: "Pooling"
+    bottom: "lm_conv1"
+    top: "lm_pool1"
+    pooling_param {
+        pool: MAX
+        kernel_size: 2
+        stride: 2
+    }
+}
+
+layer {
+    name: "lm_conv2"
+    type: "Convolution"
+    bottom: "lm_pool1"
+    top: "lm_conv2"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 40
+        kernel_size: 3
+        weight_filler {
+            type: "gaussian"
+            std: 0.01
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+#layer {
+#  bottom: "lm_conv2"
+#  top: "lm_conv2"
+#  name: "bn_lm_conv2"
+#  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+#}
+
+#layer {
+#  bottom: "lm_conv2"
+#  top: "lm_conv2"
+#  name: "scale_lm_conv2"
+#  type: "Scale"
+#  scale_param {
+#    bias_term: true
+#  }
+#}
+
+layer {
+    name: "lm_relu2"
+    type: "ReLU"
+    bottom: "lm_conv2"
+    top: "lm_conv2"
+}
+
+layer {
+    name: "lm_pool2"
+    type: "Pooling"
+    bottom: "lm_conv2"
+    top: "lm_pool2"
+    pooling_param {
+        pool: MAX
+        kernel_size: 2
+        stride: 2
+    }
+}
+
+layer {
+    name: "lm_conv3"
+    type: "Convolution"
+    bottom: "lm_pool2"
+    top: "lm_conv3"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 60
+        kernel_size: 3
+        weight_filler {
+            type: "gaussian"
+            std: 0.01
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+#layer {
+#  bottom: "lm_conv3"
+#  top: "lm_conv3"
+#  name: "bn_lm_conv3"
+#  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+#}
+
+#layer {
+#  bottom: "lm_conv3"
+#  top: "lm_conv3"
+#  name: "scale_lm_conv3"
+#  type: "Scale"
+#  scale_param {
+#    bias_term: true
+#  }
+#}
+
+layer {
+    name: "lm_relu3"
+    type: "ReLU"
+    bottom: "lm_conv3"
+    top: "lm_conv3"
+}
+
+layer {
+    name: "lm_pool3"
+    type: "Pooling"
+    bottom: "lm_conv3"
+    top: "lm_pool3"
+    pooling_param {
+        pool: MAX
+        kernel_size: 2
+        stride: 2
+    }
+}
+
+layer {
+    name: "lm_conv4"
+    type: "Convolution"
+    bottom: "lm_pool3"
+    top: "lm_conv4"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 80
+        kernel_size: 2
+        weight_filler {
+            type: "gaussian"
+            std: 0.01
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+#layer {
+#  bottom: "lm_conv4"
+#  top: "lm_conv4"
+#  name: "bn_lm_conv4"
+#  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+#}
+
+#layer {
+#  bottom: "lm_conv4"
+#  top: "lm_conv4"
+#  name: "scale_lm_conv4"
+#  type: "Scale"
+#  scale_param {
+#    bias_term: true
+#  }
+#}
+
+layer {
+    name: "lm_relu4"
+    type: "ReLU"
+    bottom: "lm_conv4"
+    top: "lm_conv4"
+}
+
+layer {
+    name: "lm_fc1"
+    type: "InnerProduct"
+    bottom: "lm_conv4"
+    top: "lm_fc1"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    inner_product_param {
+        num_output: 120
+        weight_filler {
+            type: "gaussian"
+            std: 0.005
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+layer {
+    name: "lm_relu_fc1"
+    type: "ReLU"
+    bottom: "lm_fc1"
+    top: "lm_fc1"
+}
+
+layer {
+    name: "lm_fc2"
+    type: "InnerProduct"
+    bottom: "lm_fc1"
+    top: "lm_fc2"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    inner_product_param {
+        num_output: 12
+        weight_filler {
+            type: "gaussian"
+            std: 0.005
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+##### compute structural loss
+layer{
+   name: "slice"
+   type: "Slice"
+   bottom: "lm_fc2"
+   top:  "lm_5_points"
+   top:  "lm_root"
+   slice_param{
+     axis: 1
+     slice_point: 10
+   }
+   include {
+    phase: TEST
+  }
+}
+
+layer {
+  name: "silence"
+  type: "Silence"
+  bottom: "lm_root"
+  include {
+    phase: TEST
+  }
+}
+
+layer {
+  name: "performance"
+  type: "FacialLandmarkPerformance"
+  bottom: "lm_5_points"
+  bottom: "landmark"
+  bottom: "eyedist"
+  top: "average_error"
+  top: "false_rate"
+  
+  facial_landmark_performance_param {
+    num_landmark: 5
+    error_threshold: 0.1
+  }
+  include {
+    phase: TEST
+  }
+}
+
+# for computing euclidean loss and structural loss
+layer{
+   name: "concat"
+   type: "Concat"
+   bottom: "landmark"
+   bottom: "root"
+   top:  "lm_landmark"
+   concat_param{
+     axis: 1
+   }
+}
+
+layer {
+  name: "euclidean_loss"
+  type: "EuclideanLoss"
+  bottom: "lm_fc2"
+  bottom: "lm_landmark"
+  top: "euclidean_loss"
+  loss_weight: 10
+}
+
+layer {
+  name: "structual_loss"
+  type: "StructualLoss"
+  bottom: "lm_fc2"
+  bottom: "lm_landmark"
+  top: "structual_loss"
+  structual_loss_param { 
+    num_landmark: 5
+    w0: 1.0
+    w1: 0.5
+    w2: 1.0
+    w3: 0.5
+  }
+}

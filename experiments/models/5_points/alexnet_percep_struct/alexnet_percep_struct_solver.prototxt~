@@ -1,0 +1,22 @@
+net: "./experiments/models/5_points/alexnet_percep_struct/alexnet_percep_struct_train_test.prototxt"
+# 64 * 54 = 3456 < 3466 
+test_iter: 54
+test_interval: 1000
+
+base_lr: 0.00007
+lr_policy: "step"
+gamma: 0.5
+stepsize: 50000
+
+#lr_policy: "inv"
+#gamma: 0.0001
+#power: 0.75
+
+display: 50
+max_iter: 200000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 10000
+
+snapshot_prefix: "./experiments/weights/from_100000_alexnet_percep_struct_lfw_net_224x224_rgb"
+solver_mode: GPU

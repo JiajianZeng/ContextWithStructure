@@ -20,6 +20,30 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
     imgs = []
     landmarks = []
     eyedists = []
+    # create base dir if not existed
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    output = os.path.join(output_dir, lmdb_name)
+
+    # write image to lmdb    
+    in_db_img = lmdb.open(output + '_data', map_size=1e12)  
+    in_txn_img = in_db_img.begin(write=True)
+    
+    
+    # write landmarks to lmdb
+    in_db_lmk = lmdb.open(output + '_landmark', map_size=1e12)    
+    in_txn_lmk = in_db_lmk.begin(write=True)
+    
+
+    # write eyedists to lmdb
+    in_db_dist = lmdb.open(output + '_bbox', map_size=1e12)  
+    in_txn_dist = in_db_dist.begin(write=True)
+
+    # write eye center offset to lmdb
+    in_db_eye_center = lmdb.open(output + '_eye_center', map_size=1e12)
+    in_txn_eye_center = in_db_eye_center.begin(write=True)
+     
+
     for i, (img_path, bbox, landmark) in enumerate(data):
         # read image 
         if is_color:
@@ -32,9 +56,9 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
         log("process %d,  %s" % (i ,img_path))
 
         # enlarge face bounding box and crop, resize the face  
-        enlarged_bbox = bbox.enlarge(0.05, 0.05, 0.05, 0.05)
-        if not enlarged_bbox.valid(img.shape[0], img.shape[1]):
-            enlarged_bbox = bbox
+        # enlarged_bbox = bbox.enlarge(0.05, 0.05, 0.05, 0.05)
+        # if not enlarged_bbox.valid(img.shape[0], img.shape[1]):
+        enlarged_bbox = bbox
         # make sure that when the face bounding box is incorrectly labeld,
         # the coordinates, width and height computation is correct
         enlarged_bbox.misc_clip(img.shape[0], img.shape[1])
@@ -46,13 +70,39 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
         landmark_original = enlarged_bbox.normalize_landmarks(landmark)
         # put into container
         # h * w * c -> c * h * w
-        imgs.append(np.transpose(face_original, (2, 0, 1)))
-        landmarks.append(landmark_original.reshape(2 * num_landmarks))
-        eyedist = math.sqrt(
-            (landmark_original[le_index][0] - landmark_original[re_index][0]) * (landmark_original[le_index][0] - landmark_original[re_index][0]) + 
-            (landmark_original[le_index][1] - landmark_original[re_index][1]) * (landmark_original[le_index][1] - landmark_original[re_index][1])
-            )
-        eyedists.append(eyedist)
+        im = np.transpose(face_original, (2, 0, 1))
+        # BGR -> RGB
+        im = im[::-1,:,:]  
+        im_dat = caffe.io.array_to_datum(im)  
+        in_txn_img.put('{:0>10d}'.format(i), im_dat.SerializeToString())  
+        
+        lmk = landmark_original.reshape(2 * num_landmarks)
+        datum = caffe.proto.caffe_pb2.Datum()  
+        datum.channels = lmk.shape[0]
+        datum.height = 1
+        datum.width = 1
+        datum.float_data.extend(lmk.astype(float).flat)
+        in_txn_lmk.put("{:0>10d}".format(i), datum.SerializeToString())  
+        #eyedist = math.sqrt(
+        #    (landmark_original[le_index][0] - landmark_original[re_index][0]) * (landmark_original[le_index][0] - landmark_original[re_index][0]) + 
+        #    (landmark_original[le_index][1] - landmark_original[re_index][1]) * (landmark_original[le_index][1] - landmark_original[re_index][1])
+        #    )
+        eyedist = np.array([enlarged_bbox.right - enlarged_bbox.left, enlarged_bbox.bottom - enlarged_bbox.top])
+        datum = caffe.proto.caffe_pb2.Datum()  
+        datum.channels = 2
+        datum.height = 1
+        datum.width = 1
+        datum.float_data.extend(eyedist.astype(float).flat)
+        in_txn_dist.put("{:0>10d}".format(i), datum.SerializeToString())  
+
+
+        eye_center_offset = np.array([landmark[le_index][0] - landmark[re_index][0], landmark[le_index][1] - landmark[re_index][1]])
+        datum = caffe.proto.caffe_pb2.Datum()
+        datum.channels = 2
+        datum.height = 1
+        datum.width = 1
+        datum.float_data.extend(eye_center_offset.astype(float).flat)
+        in_txn_eye_center.put("{:0>10d}".format(i), datum.SerializeToString())
         
         ## for debug 
         if i < num_to_visualize:
@@ -106,65 +156,21 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
                         bbox = BBox([0, img_size, 0, img_size])
                         draw_landmark_in_cropped_face(face_flipped, bbox.denormalize_landmarks(landmark_flipped), os.path.join("visualization", "flipped_rotated_" + str(alpha) + "_" + os.path.basename(img_path)))
                     '''
-            
-    assert(len(imgs) == len(landmarks) and len(imgs) == len(eyedists))
+    in_txn_img.commit()
+    in_txn_lmk.commit()
+    in_txn_dist.commit()
+    in_txn_eye_center.commit()
+
+    in_db_img.close()   
+    in_db_lmk.close()   
+    in_db_dist.close()        
+    in_db_eye_center.close()      
     log('number of total generated images: %s' % str(len(imgs)))
         
-    imgs, landmarks, eyedists = np.asarray(imgs), np.asarray(landmarks), np.asarray(eyedists)
     
+ 
+
     
-    # shuffle the imgs, landmarks and eyedists
-    rng_state = np.random.get_state()
-    np.random.shuffle(imgs)
-    np.random.set_state(rng_state)
-    np.random.shuffle(landmarks)
-    np.random.set_state(rng_state)
-    np.random.shuffle(eyedists)    
-
-    # create base dir if not existed
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    output = os.path.join(output_dir, lmdb_name)
-    log("generate %s" % output)
-
-    # write image to lmdb    
-    in_db = lmdb.open(output + '_data', map_size=1e12)  
-    with in_db.begin(write=True) as in_txn:  
-        for in_idx, im in enumerate(imgs):  
-            # BGR -> RGB
-            im = im[::-1,:,:]  
-            im_dat = caffe.io.array_to_datum(im)  
-            in_txn.put('{:0>10d}'.format(in_idx), im_dat.SerializeToString())  
-    in_db.close() 
-    
-    # write landmarks to lmdb
-    in_db = lmdb.open(output + '_landmark', map_size=1e12)  
-    count = 0  
-    with in_db.begin(write=True) as in_txn:  
-        for landmark in landmarks:  
-            datum = caffe.proto.caffe_pb2.Datum()  
-            datum.channels = landmark.shape[0]
-            datum.height = 1
-            datum.width = 1
-            datum.float_data.extend(landmark.astype(float).flat)
-            in_txn.put("{:0>10d}".format(count), datum.SerializeToString())  
-            count += 1  
-    in_db.close()  
-
-    # write eyedists to lmdb
-    in_db = lmdb.open(output + '_eyedist', map_size=1e12)  
-    count = 0  
-    with in_db.begin(write=True) as in_txn:  
-        for eyedist in eyedists:  
-            datum = caffe.proto.caffe_pb2.Datum()  
-            datum.channels = 1
-            datum.height = 1
-            datum.width = 1
-            datum.float_data.extend(eyedist.astype(float).flat)
-            in_txn.put("{:0>10d}".format(count), datum.SerializeToString())  
-            count += 1  
-    log('number of total images: %s' % str(len(imgs)))
-    in_db.close()  
 
 def resize_existing_lmdb(original_lmdb_data, img_size, output_dir, lmdb_prefix):
     """

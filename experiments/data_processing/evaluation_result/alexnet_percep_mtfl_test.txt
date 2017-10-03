@@ -1,0 +1,236 @@
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 50000
+FPS: 331.672 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.090024 
+    Right Eye      = 0.097350 
+    Nose           = 0.095646 
+    Left Mouth     = 0.078313 
+    Right Mouth    = 0.071102 
+Failure: 
+    Left Eye       = 0.244407 
+    Right Eye      = 0.331219 
+    Nose           = 0.338230 
+    Left Mouth     = 0.194992 
+    Right Mouth    = 0.153589
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 60000
+FPS: 342.677 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.085884 
+    Right Eye      = 0.091603 
+    Nose           = 0.091766 
+    Left Mouth     = 0.076695 
+    Right Mouth    = 0.073067 
+Failure: 
+    Left Eye       = 0.231386 
+    Right Eye      = 0.282471 
+    Nose           = 0.307513 
+    Left Mouth     = 0.178631 
+    Right Mouth    = 0.152254
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 70000
+FPS: 334.637 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 
+    Left Eye       = 0.085594 
+    Right Eye      = 0.086774 
+    Nose           = 0.094239 
+    Left Mouth     = 0.079439 
+    Right Mouth    = 0.076246 
+Failure: 
+    Left Eye       = 0.229382 
+    Right Eye      = 0.244073 
+    Nose           = 0.327212 
+    Left Mouth     = 0.198331 
+    Right Mouth    = 0.167279
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 80000
+FPS: 345.843 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085657
+    Left Eye       = 0.088363 
+    Right Eye      = 0.088559 
+    Nose           = 0.096126 
+    Left Mouth     = 0.077724 
+    Right Mouth    = 0.077514 
+Failure: 0.239533
+    Left Eye       = 0.243072 
+    Right Eye      = 0.254424 
+    Nose           = 0.345576 
+    Left Mouth     = 0.180634 
+    Right Mouth    = 0.173957
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 90000
+FPS: 345.444 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.082768
+    Left Eye       = 0.084917 
+    Right Eye      = 0.088162 
+    Nose           = 0.089748 
+    Left Mouth     = 0.074458 
+    Right Mouth    = 0.076557 
+Failure: 0.219633
+    Left Eye       = 0.219366 
+    Right Eye      = 0.250751 
+    Nose           = 0.288815 
+    Left Mouth     = 0.168280 
+    Right Mouth    = 0.170952 
+
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 100000
+FPS: 341.505 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085155
+    Left Eye       = 0.087194 
+    Right Eye      = 0.084475 
+    Nose           = 0.098541 
+    Left Mouth     = 0.076190 
+    Right Mouth    = 0.079375 
+Failure: 0.241669
+    Left Eye       = 0.241402 
+    Right Eye      = 0.230384 
+    Nose           = 0.371285 
+    Left Mouth     = 0.181302 
+    Right Mouth    = 0.183973
+
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 110000
+FPS: 343.070 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085639
+    Left Eye       = 0.089467 
+    Right Eye      = 0.087952 
+    Nose           = 0.095766 
+    Left Mouth     = 0.078212 
+    Right Mouth    = 0.076796 
+Failure: 0.243339
+    Left Eye       = 0.254424 
+    Right Eye      = 0.252421 
+    Nose           = 0.348247 
+    Left Mouth     = 0.191653 
+    Right Mouth    = 0.169950
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 120000
+FPS: 339.955 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085489
+    Left Eye       = 0.088295 
+    Right Eye      = 0.087666 
+    Nose           = 0.092910 
+    Left Mouth     = 0.079297 
+    Right Mouth    = 0.079279 
+Failure: 0.238264
+    Left Eye       = 0.243072 
+    Right Eye      = 0.246077 
+    Nose           = 0.317863 
+    Left Mouth     = 0.200334 
+    Right Mouth    = 0.183973
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 150000
+FPS: 344.649 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085436
+    Left Eye       = 0.087821 
+    Right Eye      = 0.087490 
+    Nose           = 0.095472 
+    Left Mouth     = 0.078526 
+    Right Mouth    = 0.077872 
+Failure: 0.239199
+    Left Eye       = 0.238397 
+    Right Eye      = 0.243072 
+    Nose           = 0.341569 
+    Left Mouth     = 0.193990 
+    Right Mouth    = 0.178965
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 180000
+FPS: 348.661 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085349
+    Left Eye       = 0.088123 
+    Right Eye      = 0.088167 
+    Nose           = 0.095324 
+    Left Mouth     = 0.077377 
+    Right Mouth    = 0.077755 
+Failure: 0.239132
+    Left Eye       = 0.240735 
+    Right Eye      = 0.248748 
+    Nose           = 0.339900 
+    Left Mouth     = 0.187980 
+    Right Mouth    = 0.178297
+
+
+################## Summary ################## 
+Network: alexnet_percep_deploy.prototxt 
+Dataset: mtfl_test_224x224_rgb_data 
+Number of test images: 2995 
+Iteration: 200000
+FPS: 335.386 
+Normalizer: bi-ocular distance 
+Failure threshold: 0.100 
+Mean Error: 0.085253
+    Left Eye       = 0.087969 
+    Right Eye      = 0.087961 
+    Nose           = 0.095119 
+    Left Mouth     = 0.077804 
+    Right Mouth    = 0.077411 
+Failure: 0.238731
+    Left Eye       = 0.240067 
+    Right Eye      = 0.249082 
+    Nose           = 0.338230 
+    Left Mouth     = 0.189649 
+    Right Mouth    = 0.176628
+
+
+

@@ -10,7 +10,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_data"
-    batch_size: 32
+    batch_size: 64
     backend: LMDB
   }
   transform_param {
@@ -27,7 +27,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_landmark"
-    batch_size: 32
+    batch_size: 64
     backend: LMDB
   }
 }
@@ -129,8 +129,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -144,6 +143,9 @@ layer {
   top: "conv1_1"
   name: "relu1_1"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -164,8 +166,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -179,6 +180,9 @@ layer {
   top: "conv1_2"
   name: "relu1_2"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -211,8 +215,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -225,6 +228,9 @@ layer {
   top: "conv2_1"
   name: "relu2_1"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -245,8 +251,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -260,6 +265,9 @@ layer {
   top: "conv2_2"
   name: "relu2_2"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -292,8 +300,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -307,6 +314,9 @@ layer {
   top: "conv3_1"
   name: "relu3_1"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -327,8 +337,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -342,6 +351,9 @@ layer {
   top: "conv3_2"
   name: "relu3_2"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -362,8 +374,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -377,6 +388,9 @@ layer {
   top: "conv3_3"
   name: "relu3_3"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -409,8 +423,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -423,6 +436,9 @@ layer {
   top: "conv4_1"
   name: "relu4_1"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 layer {
   bottom: "conv4_1"
@@ -442,8 +458,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -456,6 +471,9 @@ layer {
   top: "conv4_2"
   name: "relu4_2"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -476,8 +494,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -491,6 +508,9 @@ layer {
   top: "conv4_3"
   name: "relu4_3"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -523,8 +543,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -538,6 +557,9 @@ layer {
   top: "conv5_1"
   name: "relu5_1"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -558,8 +580,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -573,6 +594,9 @@ layer {
   top: "conv5_2"
   name: "relu5_2"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -593,8 +617,7 @@ layer {
     pad: 1
     kernel_size: 3
     weight_filler {
-      type: "gaussian"
-      std: 0.01
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -608,6 +631,9 @@ layer {
   top: "conv5_3"
   name: "relu5_3"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -639,11 +665,11 @@ layer {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.005
+      std: 0.0005
     }
     bias_filler {
       type: "constant"
-      value: 0.1
+      value: 0
     }
   }
 }
@@ -653,6 +679,9 @@ layer {
   top: "fc6"
   name: "relu6"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -682,11 +711,11 @@ layer {
     num_output: 4096
     weight_filler {
       type: "gaussian"
-      std: 0.005
+      std: 0.0005
     }
     bias_filler {
       type: "constant"
-      value: 0.1
+      value: 0
     }
   }
 }
@@ -696,6 +725,9 @@ layer {
   top: "fc7"
   name: "relu7"
   type: "ReLU"
+  relu_param {
+    negative_slope: 0.2
+  }
 }
 
 layer {
@@ -711,7 +743,7 @@ layer {
 layer {
   bottom: "fc7"
   top: "fc8"
-  name: "fc8"
+  name: "lm_fc8"
   type: "InnerProduct"
   param {
     lr_mult: 1
@@ -725,7 +757,7 @@ layer {
     num_output: 12
     weight_filler {
       type: "gaussian"
-      std: 0.005
+      std: 0.0005
     }
     bias_filler {
       type: "constant"
@@ -796,6 +828,7 @@ layer {
   bottom: "fc8"
   bottom: "lm_landmark"
   top: "euclidean_loss"
+  loss_weight: 10
 }
 
 

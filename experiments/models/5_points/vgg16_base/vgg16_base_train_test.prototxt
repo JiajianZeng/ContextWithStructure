@@ -10,7 +10,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_data"
-    batch_size: 32
+    batch_size: 16
     backend: LMDB
   }
   transform_param {
@@ -27,7 +27,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_landmark"
-    batch_size: 32
+    batch_size: 16
     backend: LMDB
   }
 }
@@ -42,7 +42,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_data"
-    batch_size: 32
+    batch_size: 16
     backend: LMDB
   }
   transform_param {
@@ -59,7 +59,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_landmark"
-    batch_size: 32
+    batch_size: 16
     backend: LMDB
   }
 }
@@ -73,7 +73,7 @@ layer {
   }
   data_param {
     source: "./experiments/data_processing/dataset/test/lfw_net_224x224_rgb_eyedist"
-    batch_size: 32
+    batch_size: 16
     backend: LMDB
   }
 }
@@ -102,6 +102,7 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
@@ -109,8 +110,32 @@ layer {
 layer {
   bottom: "conv1_1"
   top: "conv1_1"
+  name: "bn_conv1_1"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv1_1"
+  top: "conv1_1"
+  name: "scale_conv1_1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+
+
+layer {
+  bottom: "conv1_1"
+  top: "conv1_1"
   name: "relu1_1"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -135,7 +160,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv1_2"
+  top: "conv1_2"
+  name: "bn_conv1_2"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv1_2"
+  top: "conv1_2"
+  name: "scale_conv1_2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -144,6 +190,9 @@ layer {
   top: "conv1_2"
   name: "relu1_2"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -180,14 +229,39 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
+
+layer {
+  bottom: "conv2_1"
+  top: "conv2_1"
+  name: "bn_conv2_1"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv2_1"
+  top: "conv2_1"
+  name: "scale_conv2_1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+
 layer {
   bottom: "conv2_1"
   top: "conv2_1"
   name: "relu2_1"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -212,7 +286,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv2_2"
+  top: "conv2_2"
+  name: "bn_conv2_2"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv2_2"
+  top: "conv2_2"
+  name: "scale_conv2_2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -221,6 +316,9 @@ layer {
   top: "conv2_2"
   name: "relu2_2"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -257,7 +355,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv3_1"
+  top: "conv3_1"
+  name: "bn_conv3_1"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv3_1"
+  top: "conv3_1"
+  name: "scale_conv3_1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -266,6 +385,9 @@ layer {
   top: "conv3_1"
   name: "relu3_1"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -290,7 +412,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv3_2"
+  top: "conv3_2"
+  name: "bn_conv3_2"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv3_2"
+  top: "conv3_2"
+  name: "scale_conv3_2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -299,6 +442,9 @@ layer {
   top: "conv3_2"
   name: "relu3_2"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -323,7 +469,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv3_3"
+  top: "conv3_3"
+  name: "bn_conv3_3"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv3_3"
+  top: "conv3_3"
+  name: "scale_conv3_3"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -332,6 +499,9 @@ layer {
   top: "conv3_3"
   name: "relu3_3"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -368,15 +538,41 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
+
+layer {
+  bottom: "conv4_1"
+  top: "conv4_1"
+  name: "bn_conv4_1"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv4_1"
+  top: "conv4_1"
+  name: "scale_conv4_1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+
 layer {
   bottom: "conv4_1"
   top: "conv4_1"
   name: "relu4_1"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
+
 layer {
   bottom: "conv4_1"
   top: "conv4_2"
@@ -399,14 +595,39 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
+
+layer {
+  bottom: "conv4_2"
+  top: "conv4_2"
+  name: "bn_conv4_2"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv4_2"
+  top: "conv4_2"
+  name: "scale_conv4_2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+
 layer {
   bottom: "conv4_2"
   top: "conv4_2"
   name: "relu4_2"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -431,7 +652,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv4_3"
+  top: "conv4_3"
+  name: "bn_conv4_3"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv4_3"
+  top: "conv4_3"
+  name: "scale_conv4_3"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -440,6 +682,9 @@ layer {
   top: "conv4_3"
   name: "relu4_3"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -476,6 +721,7 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
@@ -483,8 +729,32 @@ layer {
 layer {
   bottom: "conv5_1"
   top: "conv5_1"
+  name: "bn_conv5_1"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv5_1"
+  top: "conv5_1"
+  name: "scale_conv5_1"
+  type: "Scale"
+  scale_param {
+    bias_term: true
+  }
+}
+
+
+layer {
+  bottom: "conv5_1"
+  top: "conv5_1"
   name: "relu5_1"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -509,7 +779,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv5_2"
+  top: "conv5_2"
+  name: "bn_conv5_2"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv5_2"
+  top: "conv5_2"
+  name: "scale_conv5_2"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -518,6 +809,9 @@ layer {
   top: "conv5_2"
   name: "relu5_2"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -542,7 +836,28 @@ layer {
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
+  }
+}
+
+layer {
+  bottom: "conv5_3"
+  top: "conv5_3"
+  name: "bn_conv5_3"
+  type: "BatchNorm"
+  #batch_norm_param {
+  #  use_global_stats: false
+  #}
+}
+
+layer {
+  bottom: "conv5_3"
+  top: "conv5_3"
+  name: "scale_conv5_3"
+  type: "Scale"
+  scale_param {
+    bias_term: true
   }
 }
 
@@ -551,6 +866,9 @@ layer {
   top: "conv5_3"
   name: "relu5_3"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -581,10 +899,12 @@ layer {
   inner_product_param {
     num_output: 4096
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.005
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
@@ -594,6 +914,9 @@ layer {
   top: "fc6"
   name: "relu6"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -622,10 +945,12 @@ layer {
   inner_product_param {
     num_output: 4096
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.005
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }
@@ -635,6 +960,9 @@ layer {
   top: "fc7"
   name: "relu7"
   type: "ReLU"
+  #relu_param {
+  #  negative_slope: 0.1
+  #}
 }
 
 layer {
@@ -663,10 +991,12 @@ layer {
   inner_product_param {
     num_output: 10
     weight_filler {
-      type: "xavier"
+      type: "gaussian"
+      std: 0.005
     }
     bias_filler {
       type: "constant"
+      value: 0
     }
   }
 }

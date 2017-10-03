@@ -83,47 +83,54 @@ Failure: %f
 '''
 
 
-def compute_normed_error(landmark_gt, landmark_pre, normalizer, num_landmarks=5, print_info=True):
+def compute_normed_error_by_binocular(landmark_gt, landmark_pre, bbox, eye_center, num_landmarks=5, print_info=True):
     """
     Compute normalized error for a test sample.
     param:
     -landmark_gt, of shape (N, 2)
     -landmark_pre, of shape (N, 2)
+    -bbox, of shape (2)
+    -eye_center, of shape (2), which is the offset in x-axis and y-axis, unnormalized
     """
     normed_error = np.zeros(num_landmarks)
+    bi_nocular_dist = norm(eye_center)     
     for i in range(num_landmarks):
         # L2-norm
-        normed_error[i] = norm(landmark_gt[i] - landmark_pre[i]) / normalizer
+        gt = landmark_gt[i] * bbox
+        pre = landmark_pre[i] * bbox     
+        normed_error[i] = norm(gt - pre) / bi_nocular_dist
     if print_info:
-        print '##### ground-truth, predicted landmark and normalized error #####'
+        print '##### ground-truth, predicted landmark, bounding box, eye center offset and normalized error #####'
         print landmark_gt
         print landmark_pre
+        print bbox
+        print eye_center
         print normed_error
     return normed_error
 
-def compute_normed_error_by_width(landmark_gt, landmark_pre, img_size, num_landmarks=5, print_info=True):
+def compute_normed_error_by_width(landmark_gt, landmark_pre, bbox, num_landmarks=5, print_info=True):
     """
     Compute normalized error for a test sample normalized by bounding box width.
     param:
     -landmark_gt, of shape (N, 2)
     -landmark_pre, of shape (N, 2)
-    -img_size, of shape (2)
+    -bbox, of shape (2)
     """
     normed_error = np.zeros(num_landmarks)
     for i in range(num_landmarks):
         # L2-norm
-        gt = landmark_gt[i] * img_size
-        pre = landmark_pre[i] * img_size
-        normed_error[i] = norm(gt - pre) / img_size[0]
+        gt = landmark_gt[i] * bbox
+        pre = landmark_pre[i] * bbox
+        normed_error[i] = norm(gt - pre) / bbox[0]
     if print_info:
-        print '##### ground-truth, predicted landmark, image size and normalized error #####'
+        print '##### ground-truth, predicted landmark, bounding box and normalized error #####'
         print landmark_gt
         print landmark_pre
-        print img_size
+        print bbox
         print normed_error
     return normed_error
      
-def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True, use_width=False):
+def evaluate(lmdb_data, lmdb_landmark, lmdb_bbox, mean_file, num_landmarks, network, caffemodel, caffe_mode='GPU', gpu_id=0, threshold=0.1, input_layer="data", output_layer="fc8", print_info=True, use_width=False, lmdb_eye_center=None):
     """
     Evalute a specified test dataset on a specific network.
     return:
@@ -136,8 +143,12 @@ def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, n
     images = read_image_from_lmdb(lmdb_data, np.iinfo(np.int32).max, '.', vis=False, print_info=print_info)
     # each element in list landmarks_gt should be reshaped to (num_landmarks, 2) before usage
     landmarks_gt = read_label_from_lmdb(lmdb_landmark, np.iinfo(np.int32).max, print_info)
-    # each element in list eyedists should be reshaped to (1) before usage
-    eyedists = read_label_from_lmdb(lmdb_eyedist, np.iinfo(np.int32).max, print_info)
+    # each element in list bboxes should be reshaped to (2) before usage
+    bboxes = read_label_from_lmdb(lmdb_bbox, np.iinfo(np.int32).max, print_info)
+
+    # each element in list eye_centers should be reshape to (2) before usage
+    if lmdb_eye_center is not None:
+        eye_centers = read_label_from_lmdb(lmdb_eye_center, np.iinfo(np.int32).max, print_info)
 
     # load mean image file (.binaryproto)
     blob = caffe.proto.caffe_pb2.BlobProto()
@@ -167,9 +178,9 @@ def evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, n
             draw_landmark_in_cropped_face(img, bbox.denormalize_landmarks(landmark_pre), '0.jpg')
         '''
         if use_width:
-            normed_error[i] = compute_normed_error_by_width(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, eyedists[i].reshape(2), num_landmarks, print_info)
+            normed_error[i] = compute_normed_error_by_width(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, bboxes[i].reshape(2), num_landmarks, print_info)
         else:
-            normed_error[i] = compute_normed_error(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, eyedists[i].reshape(2), num_landmarks, print_info)
+            normed_error[i] = compute_normed_error_by_binocular(landmarks_gt[i].reshape(num_landmarks, 2), landmark_pre, bboxes[i].reshape(2), eye_centers[i].reshape(2), num_landmarks, print_info)
     t = time.clock() - t
     
     # failure rate
@@ -190,9 +201,13 @@ def parse_args():
     parser.add_argument('--lmdb_landmark',
                         help='landmark lmdb file',
                         default=None, type=str)
-    # eyedist lmdb
-    parser.add_argument('--lmdb_eyedist',
-                        help='eyedist lmdb file',
+    # bounding box lmdb
+    parser.add_argument('--lmdb_bbox',
+                        help='bounding box lmdb file, of format (width, height)',
+                        default=None, type=str)
+    # eye center lmdb
+    parser.add_argument('--lmdb_eye_center',
+                        help='eye center lmdb file, of formar (x_offset, y_offset)',
                         default=None, type=str)
     # mean image file
     parser.add_argument('--mean_file',
@@ -253,7 +268,8 @@ if __name__ == '__main__':
     args = parse_args()
     lmdb_data = args.lmdb_data
     lmdb_landmark = args.lmdb_landmark
-    lmdb_eyedist = args.lmdb_eyedist
+    lmdb_bbox = args.lmdb_bbox
+    lmdb_eye_center = args.lmdb_eye_center
     mean_file = args.mean_file
     num_landmarks = args.num_landmarks
     network = args.network
@@ -266,7 +282,7 @@ if __name__ == '__main__':
     print_info = args.print_info
     use_width = args.use_width
      
-    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_eyedist, mean_file, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info, use_width=use_width)    
+    normed_mean_error, failure_rate, fps, num_images = evaluate(lmdb_data, lmdb_landmark, lmdb_bbox, mean_file, num_landmarks, network, caffemodel, caffe_mode, gpu_id, threshold, input_layer, output_layer, print_info, use_width=use_width, lmdb_eye_center=lmdb_eye_center)    
     # format evaluation info
     if num_landmarks == 5:
         eval_info = template_5_points % (os.path.basename(network), 

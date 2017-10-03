@@ -3,7 +3,7 @@ net: "./experiments/models/5_points/vgg16_percep/vgg16_percep_train_test.prototx
 test_iter: 20
 test_interval: 1000
 
-base_lr: 0.01
+base_lr: 0.001
 lr_policy: "step"
 gamma: 0.1
 stepsize: 50000
@@ -18,5 +18,5 @@ weight_decay: 0.0005
 display: 50
 max_iter: 200000
 snapshot: 10000
-snapshot_prefix: "./experiments/weights/vgg16_percep_lfw_net_224x224_rgb"
+snapshot_prefix: "./experiments/weights/lrelu_vgg16_percep_lfw_net_224x224_rgb"
 solver_mode: GPU

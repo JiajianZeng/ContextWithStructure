@@ -3,9 +3,9 @@ net: "./experiments/models/5_points/alexnet_percep_struct/alexnet_percep_struct_
 test_iter: 54
 test_interval: 1000
 
-base_lr: 0.001
+base_lr: 0.000075
 lr_policy: "step"
-gamma: 0.1
+gamma: 0.5
 stepsize: 50000
 
 #lr_policy: "inv"
@@ -18,5 +18,5 @@ momentum: 0.9
 weight_decay: 0.0005
 snapshot: 10000
 
-snapshot_prefix: "./experiments/weights/alexnet_percep_struct_lfw_net_224x224_rgb"
+snapshot_prefix: "./experiments/weights/from_100000_alexnet_percep_struct_lfw_net_224x224_rgb"
 solver_mode: GPU
