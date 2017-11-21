@@ -2,7 +2,7 @@ net: "./experiments/models/19_points/alexnet_struct_aflw_full/alexnet_struct_tra
 test_iter: 68
 test_interval: 1000
 
-base_lr: 0.01
+base_lr: 0.001
 #lr_policy: "step"
 #gamma: 0.1
 #stepsize: 50000

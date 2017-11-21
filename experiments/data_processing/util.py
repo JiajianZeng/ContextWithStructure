@@ -69,6 +69,44 @@ def getDataFromTxt(txt, img_base_dir, with_landmark=True, num_landmarks=5):
             result.append((img_path, bbox, landmark))
     return result
 
+def getDataFromTxtAFLW(txt, img_base_dir, with_landmark=True, num_landmarks=5):
+    """
+    Generate data from txt file. Each line in the text file is of format (img_name, x1, x2, y1, y2, lm1_x, lm1_y, lm2_x, lm2_y,...,v1, v2,...,yaw).
+ 
+    return: [(img_path, bbox, landmark, visibility)]
+    -img_path: full file path of the image
+    -bbox: [left, right, top, bottom]
+    -landmark: [(x1, y1), (x2, y2), ...]
+    -visibility: [v1, v2, ...]
+    """
+    result = []
+    with open(txt, 'r') as fd:
+        lines = fd.readlines()
+        for line in lines:
+            line = line.strip()
+            contents = line.split(' ')
+            # full image path
+            img_path = os.path.join(img_base_dir, contents[0].replace('\\', '/')) 
+            # bounding box of format (left, right, top, bottom)
+            bbox = (contents[1], contents[2], contents[3], contents[4])
+            bbox = [float(_) for _ in bbox]
+            bbox = BBox(bbox)
+            if not with_landmark:
+                result.append((img_path, bbox))
+                continue
+            # landmark 
+            landmark = np.zeros((num_landmarks, 2))
+            for index in range(0, num_landmarks):
+                lm = (float(contents[5 + 2 * index]), float(contents[5 + 2 * index + 1]))
+                landmark[index] = lm
+            # visibility
+            visibility = np.zeros(num_landmarks, dtype=np.int)
+            for index in range(0, num_landmarks):
+                v = int(contents[5 + 2 * num_landmarks + index])
+                visibility[index] = v
+            result.append((img_path, bbox, landmark, visibility))
+    return result
+
 class BBox(object):
     """
     Bounding box of face which comprises a four-elements tuple (x, y, w, h).

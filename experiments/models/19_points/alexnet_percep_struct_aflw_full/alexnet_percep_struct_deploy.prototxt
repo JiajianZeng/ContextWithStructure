@@ -208,7 +208,7 @@ layer {
   bottom: "lm_fc7"
   top: "lm_fc8"
   inner_product_param {
-    num_output: 52
+    num_output: 50
   }
 }
 
@@ -224,7 +224,7 @@ layer{
    top:  "pre_landmark_Nose"
    top:  "pre_landmark_Mouth"
    top:  "pre_landmark_Chin"
-   top:  "pre_landmark_Root"
+   #top:  "pre_landmark_Root"
    slice_param{
      axis: 1
      slice_point: 8
@@ -233,7 +233,7 @@ layer{
      slice_point: 32
      slice_point: 40
      slice_point: 48
-     slice_point: 50
+     #slice_point: 50
    }
 }
 

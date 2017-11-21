@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import caffe
 import argparse
-from util import log, draw_landmark_in_original_image, draw_landmark_in_cropped_face, getDataFromTxt,BBox
+from util import log, draw_landmark_in_original_image, draw_landmark_in_cropped_face, getDataFromTxt, getDataFromTxtAFLW, BBox
 from image_augmentation import flip, rotate
 from lmdb_util import read_image_from_lmdb
 import PIL.Image
@@ -16,7 +16,11 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
     """
     Generate lmdb data.
     """
-    data = getDataFromTxt(meta_txt, img_base_dir, num_landmarks=num_landmarks)
+    # for AFLW dataset
+    data = getDataFromTxtAFLW(meta_txt, img_base_dir, num_landmarks=num_landmarks)
+    
+    # for other datasets that does not need visibility information
+    # data = getDataFromTxt(meta_txt, img_base_dir, num_landmarks=num_landmarks)
     imgs = []
     landmarks = []
     eyedists = []
@@ -35,16 +39,20 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
     in_txn_lmk = in_db_lmk.begin(write=True)
     
 
-    # write eyedists to lmdb
-    in_db_dist = lmdb.open(output + '_bbox', map_size=1e12)  
+    # write eyedist to lmdb
+    in_db_dist = lmdb.open(output + '_eyedist', map_size=1e12)  
     in_txn_dist = in_db_dist.begin(write=True)
+
+    # write visibility to lmdb
+    in_db_v = lmdb.open(output + '_visibility', map_size=1e12)
+    in_txn_v = in_db_v.begin(write=True)
 
     # write eye center offset to lmdb
     in_db_eye_center = lmdb.open(output + '_eye_center', map_size=1e12)
     in_txn_eye_center = in_db_eye_center.begin(write=True)
      
 
-    for i, (img_path, bbox, landmark) in enumerate(data):
+    for i, (img_path, bbox, landmark, v) in enumerate(data):
         # read image 
         if is_color:
            channel = 3
@@ -76,20 +84,35 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
         im_dat = caffe.io.array_to_datum(im)  
         in_txn_img.put('{:0>10d}'.format(i), im_dat.SerializeToString())  
         
+        # write landmark 
         lmk = landmark_original.reshape(2 * num_landmarks)
         datum = caffe.proto.caffe_pb2.Datum()  
         datum.channels = lmk.shape[0]
         datum.height = 1
         datum.width = 1
         datum.float_data.extend(lmk.astype(float).flat)
-        in_txn_lmk.put("{:0>10d}".format(i), datum.SerializeToString())  
-        #eyedist = math.sqrt(
-        #    (landmark_original[le_index][0] - landmark_original[re_index][0]) * (landmark_original[le_index][0] - landmark_original[re_index][0]) + 
-        #    (landmark_original[le_index][1] - landmark_original[re_index][1]) * (landmark_original[le_index][1] - landmark_original[re_index][1])
-        #    )
-        eyedist = np.array([enlarged_bbox.right - enlarged_bbox.left, enlarged_bbox.bottom - enlarged_bbox.top])
+        in_txn_lmk.put("{:0>10d}".format(i), datum.SerializeToString()) 
+        
+        # write visibility, only for AFLW dataset
+        extend_v = np.zeros(2 * num_landmarks, dtype=np.int)
+        for i in range(num_landmarks):
+            extend_v[2 * i] = v[i]
+            extend_v[2 * i + 1] = v[i]
         datum = caffe.proto.caffe_pb2.Datum()  
-        datum.channels = 2
+        datum.channels = extend_v.shape[0]
+        datum.height = 1
+        datum.width = 1
+        datum.float_data.extend(extend_v.astype(float).flat)
+        in_txn_v.put("{:0>10d}".format(i), datum.SerializeToString()) 
+        
+        eyedist = math.sqrt(
+            (landmark_original[le_index][0] - landmark_original[re_index][0]) * (landmark_original[le_index][0] - landmark_original[re_index][0]) + 
+            (landmark_original[le_index][1] - landmark_original[re_index][1]) * (landmark_original[le_index][1] - landmark_original[re_index][1])
+            )
+        eyedist = np.asarray(eyedist)
+        # eyedist = np.array([enlarged_bbox.right - enlarged_bbox.left, enlarged_bbox.bottom - enlarged_bbox.top])
+        datum = caffe.proto.caffe_pb2.Datum()  
+        datum.channels = 1
         datum.height = 1
         datum.width = 1
         datum.float_data.extend(eyedist.astype(float).flat)
@@ -159,11 +182,13 @@ def generate_lmdb(meta_txt, img_base_dir, output_dir, lmdb_name, is_color, img_s
     in_txn_img.commit()
     in_txn_lmk.commit()
     in_txn_dist.commit()
+    in_txn_v.commit()
     in_txn_eye_center.commit()
 
     in_db_img.close()   
     in_db_lmk.close()   
-    in_db_dist.close()        
+    in_db_dist.close()   
+    in_db_v.close()     
     in_db_eye_center.close()      
     log('number of total generated images: %s' % str(len(imgs)))
         
@@ -349,7 +374,7 @@ if __name__ == '__main__':
         subtract_mean_divide_std(lmdb2compute_mean_and_std, original_lmdb, output_dir, lmdb_prefix, is_color)
     # generate lmdb
     else:
-        generate_lmdb(meta_file, img_base_dir, output_dir, lmdb_prefix, is_color, img_size, augment, num_landmarks, le_index, re_index, rotation_angles, num_to_visualize)
+        generate_lmdb(meta_file, img_base_dir, output_dir, lmdb_prefix, is_color, img_size, augment=augment, num_landmarks=num_landmarks, le_index=le_index, re_index=re_index, rotation_angles=rotation_angles, num_to_visualize=num_to_visualize)
     
     ## train_txt = os.path.join('/share/disk/zengjiajian_dataset/LFW_NET', 'trainImageList.txt')
     ## generate_lmdb(train_txt, '/share/disk/zengjiajian_dataset/LFW_NET', 'dataset/train', 'lfw_net_224x224_rgb', True, 224, augment=True)

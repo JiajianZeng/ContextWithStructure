@@ -1,4 +1,4 @@
-name: "alexnet_struct_224x224_rgb"
+name: "alexnet_base_224x224_rgb"
 
 layer {
   name: "data"
@@ -8,6 +8,10 @@ layer {
     shape: {dim: 1 dim: 3 dim: 224 dim: 224}
   }
 }
+
+# Use AlexNet to predict the shape (5 landmarks)
+# The net will be updated
+######### Shape Prediction Network #########
 
 layer {
   name: "lm_conv1"
@@ -20,12 +24,14 @@ layer {
     stride: 4
   }
 }
+
 layer {
   name: "lm_relu1"
   type: "ReLU"
   bottom: "lm_conv1"
   top: "lm_conv1"
 }
+
 layer {
   name: "lm_norm1"
   type: "LRN"
@@ -208,120 +214,8 @@ layer {
   bottom: "lm_fc7"
   top: "lm_fc8"
   inner_product_param {
-    num_output: 50
+    num_output: 42
   }
-}
-
-##### For computation of results
-layer{
-   name: "lm_slice_pre"
-   type: "Slice"
-   bottom: "lm_fc8"
-   top:  "pre_landmark_LeftBrow"
-   top:  "pre_landmark_RightBrow"
-   top:  "pre_landmark_LeftEye"
-   top:  "pre_landmark_RightEye"
-   top:  "pre_landmark_Nose"
-   top:  "pre_landmark_Mouth"
-   top:  "pre_landmark_Chin"
-   slice_param{
-     axis: 1
-     slice_point: 8
-     slice_point: 16
-     slice_point: 24
-     slice_point: 32
-     slice_point: 40
-     slice_point: 48
-   }
-}
-
-layer{
-   name: "lm_slice_pre_LeftBrow"
-   type: "Slice"
-   bottom: "pre_landmark_LeftBrow"
-   top:  "pre_landmark_LeftBrow_Point"
-   top:  "pre_landmark_LeftBrow_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer{
-   name: "lm_slice_pre_RightBrow"
-   type: "Slice"
-   bottom: "pre_landmark_RightBrow"
-   top:  "pre_landmark_RightBrow_Point"
-   top:  "pre_landmark_RightBrow_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer{
-   name: "lm_slice_pre_LeftEye"
-   type: "Slice"
-   bottom: "pre_landmark_LeftEye"
-   top:  "pre_landmark_LeftEye_Point"
-   top:  "pre_landmark_LeftEye_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-
-}
-
-layer{
-   name: "lm_slice_pre_RightEye"
-   type: "Slice"
-   bottom: "pre_landmark_RightEye"
-   top:  "pre_landmark_RightEye_Point"
-   top:  "pre_landmark_RightEye_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer{
-   name: "lm_slice_pre_Nose"
-   type: "Slice"
-   bottom: "pre_landmark_Nose"
-   top:  "pre_landmark_Nose_Point"
-   top:  "pre_landmark_Nose_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer{
-   name: "lm_slice_pre_Mouth"
-   type: "Slice"
-   bottom: "pre_landmark_Mouth"
-   top:  "pre_landmark_Mouth_Point"
-   top:  "pre_landmark_Mouth_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer{
-   name: "concat_pre"
-   type: "Concat"
-   bottom: "pre_landmark_LeftBrow_Point"
-   bottom: "pre_landmark_RightBrow_Point"
-   bottom: "pre_landmark_LeftEye_Point"
-   bottom: "pre_landmark_RightEye_Point"
-   bottom: "pre_landmark_Nose_Point"
-   bottom: "pre_landmark_Mouth_Point"
-   bottom: "pre_landmark_Chin"
-   top:  "lm_19_points"
-   concat_param{
-     axis: 1
-   }
 }
 
 

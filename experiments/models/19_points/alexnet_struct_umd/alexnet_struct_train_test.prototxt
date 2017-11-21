@@ -398,14 +398,15 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 52
+    # 19 points + 6 part roots
+    num_output: 50
     weight_filler {
       type: "gaussian"
-      std: 0.01
+      std: 0.005
     }
     bias_filler {
       type: "constant"
-      value: 0
+      value: 0.1
     }
   }
 }
@@ -422,7 +423,6 @@ layer{
    top:  "pre_landmark_Nose"
    top:  "pre_landmark_Mouth"
    top:  "pre_landmark_Chin"
-   top:  "pre_landmark_Root"
    slice_param{
      axis: 1
      slice_point: 8
@@ -431,9 +431,16 @@ layer{
      slice_point: 32
      slice_point: 40
      slice_point: 48
-     slice_point: 50
    }
+}
 
+layer{
+  name: "silence_chin"
+  type: "Silence"
+  bottom: "pre_landmark_Chin"
+  include {
+    phase: TRAIN
+  }
 }
 
 layer{
@@ -680,200 +687,6 @@ layer {
   }
 }
 
-###Root Part
-
-layer{
-   name: "lm_slice_pre_LeftBrow"
-   type: "Slice"
-   bottom: "pre_landmark_LeftBrow"
-   top:  "pre_landmark_LeftBrow_Point"
-   top:  "pre_landmark_LeftBrow_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-
-layer {
-  name: "silence_LeftBrow"
-  type: "Silence"
-  bottom: "pre_landmark_LeftBrow_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-layer{
-   name: "lm_slice_pre_RightBrow"
-   type: "Slice"
-   bottom: "pre_landmark_RightBrow"
-   top:  "pre_landmark_RightBrow_Point"
-   top:  "pre_landmark_RightBrow_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-layer {
-  name: "silence_RightBrow"
-  type: "Silence"
-  bottom: "pre_landmark_RightBrow_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-layer{
-   name: "lm_slice_pre_LeftEye"
-   type: "Slice"
-   bottom: "pre_landmark_LeftEye"
-   top:  "pre_landmark_LeftEye_Point"
-   top:  "pre_landmark_LeftEye_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-
-}
-layer {
-  name: "silence_LeftEye"
-  type: "Silence"
-  bottom: "pre_landmark_LeftEye_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-
-layer{
-   name: "lm_slice_pre_RightEye"
-   type: "Slice"
-   bottom: "pre_landmark_RightEye"
-   top:  "pre_landmark_RightEye_Point"
-   top:  "pre_landmark_RightEye_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-layer {
-  name: "silence_RightEye"
-  type: "Silence"
-  bottom: "pre_landmark_RightEye_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-layer{
-   name: "lm_slice_pre_Nose"
-   type: "Slice"
-   bottom: "pre_landmark_Nose"
-   top:  "pre_landmark_Nose_Point"
-   top:  "pre_landmark_Nose_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-layer {
-  name: "silence_Nose"
-  type: "Silence"
-  bottom: "pre_landmark_Nose_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-layer{
-   name: "lm_slice_pre_Mouth"
-   type: "Slice"
-   bottom: "pre_landmark_Mouth"
-   top:  "pre_landmark_Mouth_Point"
-   top:  "pre_landmark_Mouth_root"
-   slice_param{
-     axis: 1
-     slice_point: 6
-   }
-}
-layer {
-  name: "silence_Mouth"
-  type: "Silence"
-  bottom: "pre_landmark_Mouth_Point"
-  include {
-    phase: TRAIN
-  }
-}
-
-layer{
-   name: "concat_pre_center"
-   type: "Concat"
-   bottom: "pre_landmark_LeftBrow_root"
-   bottom: "pre_landmark_RightBrow_root"
-   bottom: "pre_landmark_LeftEye_root"
-   bottom: "pre_landmark_RightEye_root"
-   bottom: "pre_landmark_Nose_root"
-   bottom: "pre_landmark_Mouth_root"
-   bottom: "pre_landmark_Chin"
-   bottom: "pre_landmark_Root"
-   top:  "pre_landmark_Root_part"
-   concat_param{
-     axis: 1
-   }
-}
-
-layer{
-   name: "concat_gt_center"
-   type: "Concat"
-   bottom: "gt_landmark_LeftBrow_root"
-   bottom: "gt_landmark_RightBrow_root"
-   bottom: "gt_landmark_LeftEye_root"
-   bottom: "gt_landmark_RightEye_root"
-   bottom: "gt_landmark_Nose_root"
-   bottom: "gt_landmark_Mouth_root"
-   bottom: "gt_landmark_Chin"
-   top:  "gt_landmark_Face"
-   concat_param{
-     axis: 1
-   }
-}
-
-layer {
-  name: "averagepoint_Root"
-  type: "AveragePoint"
-  bottom: "gt_landmark_Face"
-  top:    "gt_landmark_Root"
-  average_point_param{
-    num_landmark: 7
-  }
-}
-
-layer{
-   name: "concat_Root"
-   type: "Concat"
-   bottom: "gt_landmark_Face"
-   bottom: "gt_landmark_Root"
-   top:  "gt_landmark_Root_part"
-   concat_param{
-     axis: 1
-   }
-}
-
-layer {
-  name: "structual_loss_Root"
-  type: "StructualLoss"
-  bottom: "pre_landmark_Root_part"
-  bottom: "gt_landmark_Root_part"
-  top: "structual_loss_Root"
-  structual_loss_param { 
-    num_landmark: 7
-    w0: 1.0
-    w1: 0.5
-    w2: 1.0
-    w3: 0.5
-  }
-}
-
 ###Euclidean loss
 layer{
    name: "concat_gt"
@@ -885,7 +698,6 @@ layer{
    bottom: "gt_landmark_Nose_part"
    bottom: "gt_landmark_Mouth_part"
    bottom: "gt_landmark_Chin"
-   bottom: "gt_landmark_Root"
    top:  "gt_landmark"
    concat_param{
      axis: 1
@@ -903,6 +715,147 @@ layer {
 }
 
 #####Performance
+layer{
+   name: "lm_slice_pre_LeftBrow"
+   type: "Slice"
+   bottom: "pre_landmark_LeftBrow"
+   top:  "pre_landmark_LeftBrow_Point"
+   top:  "pre_landmark_LeftBrow_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+}
+
+layer {
+  name: "silence_LeftBrow"
+  type: "Silence"
+  bottom: "pre_landmark_LeftBrow_root"
+  include {
+    phase: TEST
+  }
+}
+
+layer{
+   name: "lm_slice_pre_RightBrow"
+   type: "Slice"
+   bottom: "pre_landmark_RightBrow"
+   top:  "pre_landmark_RightBrow_Point"
+   top:  "pre_landmark_RightBrow_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+}
+layer {
+  name: "silence_RightBrow"
+  type: "Silence"
+  bottom: "pre_landmark_RightBrow_root"
+  include {
+    phase: TEST
+  }
+}
+
+layer{
+   name: "lm_slice_pre_LeftEye"
+   type: "Slice"
+   bottom: "pre_landmark_LeftEye"
+   top:  "pre_landmark_LeftEye_Point"
+   top:  "pre_landmark_LeftEye_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+
+}
+layer {
+  name: "silence_LeftEye"
+  type: "Silence"
+  bottom: "pre_landmark_LeftEye_root"
+  include {
+    phase: TEST
+  }
+}
+
+
+layer{
+   name: "lm_slice_pre_RightEye"
+   type: "Slice"
+   bottom: "pre_landmark_RightEye"
+   top:  "pre_landmark_RightEye_Point"
+   top:  "pre_landmark_RightEye_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+}
+layer {
+  name: "silence_RightEye"
+  type: "Silence"
+  bottom: "pre_landmark_RightEye_root"
+  include {
+    phase: TEST
+  }
+}
+
+layer{
+   name: "lm_slice_pre_Nose"
+   type: "Slice"
+   bottom: "pre_landmark_Nose"
+   top:  "pre_landmark_Nose_Point"
+   top:  "pre_landmark_Nose_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+}
+layer {
+  name: "silence_Nose"
+  type: "Silence"
+  bottom: "pre_landmark_Nose_root"
+  include {
+    phase: TEST
+  }
+}
+
+layer{
+   name: "lm_slice_pre_Mouth"
+   type: "Slice"
+   bottom: "pre_landmark_Mouth"
+   top:  "pre_landmark_Mouth_Point"
+   top:  "pre_landmark_Mouth_root"
+   slice_param{
+     axis: 1
+     slice_point: 6
+   }
+   include {
+    phase: TEST
+  }
+}
+layer {
+  name: "silence_Mouth"
+  type: "Silence"
+  bottom: "pre_landmark_Mouth_root"
+  include {
+    phase: TEST
+  }
+}
+
 layer{
    name: "concat_pre"
    type: "Concat"
