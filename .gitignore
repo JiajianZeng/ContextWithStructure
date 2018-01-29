@@ -32,6 +32,7 @@
 # Editor temporaries
 *.swp
 *~
+*.swo
 
 # Sublime Text settings
 *.sublime-workspace
@@ -103,9 +104,6 @@ MANIFEST-*
 
 # lmdb files
 *.mdb
-
-# temporary files
-*.*~
 
 # except for image_read_from_lmdb
 !experiments/data_processing/image_read_from_lmdb/
