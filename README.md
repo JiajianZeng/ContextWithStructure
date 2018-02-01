@@ -4,7 +4,7 @@
 In the following, we will provide the details of the **datasets** as well as the **instructions** to train and evaluate the models.
 
 # Datasets
-## Download
+## <a name="download"></a>Download
 Currently, we provide four datasets, which are [AFLW_FULL](https://drive.google.com/open?id=1KntIVs2VfhJb3T2zj36Iptqwi-csoEMi), [LFW_NET](https://drive.google.com/open?id=1WJ1ZxJsj4hhIshYRKdVJnNCYQMZodPwe), [MTFL_TEST](https://drive.google.com/open?id=195YLR6aUVcmZiW8kFTk6g18sZsD1qdUk) and [UMDFaces](https://drive.google.com/open?id=1aB-lVsBvjIIlD4sTLrRH3sVLpB_GJUjV). For *AFLW_FULL*, *LFW_NET* and *MTFL_TEST* datasets, both the images and annotations can be downloaded via the Google Drive link. As for the *UMDFaces* dataset, only the annotations are provided because of the storage limit of my Google Drive account (15GB vs 60GB). You can download it from its [official project page](http://www.umdfaces.io/). 
 
 ## Annotation
@@ -47,7 +47,8 @@ Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST
 - refer [Caffe Installation](http://caffe.berkeleyvision.org/installation.html) to install
 
 Here *$CWS_HOME* means the root directory of the cloned project.
-
+## Generate LMDB
+- download the datasets via the Google Drive link provided in the [Download](#download) section.
 
 
 
