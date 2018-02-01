@@ -23,7 +23,22 @@ The detailed descriptions of the annotations of each dataset are as follows:
 Where *img_path* means the file path of a image relative to the root directory of the dataset, *(bbox_x1, bbox_y1)* and *(bbox_x2, bbox_y2)* are the coordinates of the left top and right bottom points of the face bounding box respectively. *(lm#_x, lm#_y)* represents the coordinate of the #-th facial landmark, and *v#* indicates its visibility. 
 
 ## Processing
-Detailed processing tutorial will be provided very soon.
+The data processing consists of two parts: 1) data augmentation and 2) preprocessing. Specifically, the data augmentation includes horizontal flip and rotation. And the preprocessing includes mean image subtraction and ground-truth landmark normalization. 
+
+### Data augmentations
+
+| Dataset | augmentation | # of training images | # of training images after augmentation |
+| ------- | :----------: | :------------------: | :-------------------------------------: |
+| AFLW_FULL | flip + rotation (-5 degrees and +5 degrees)                | 20000 | 60000 |
+|  LFW_NET  | flip + rotation (-5 degrees and +5 degrees) + rotated flip | 10000 | 60000 |                                            
+| MTFL_TEST |                               x                            |   x   |   x   |
+| UMDFaces  |                        no augmentation                     | 317918| 317918|       
+
+Here *rotated flip* means the horizontal flip after rotation, and *MTFL_TEST* dataset is used as the test set only. 
+
+### Preprocessings
+1. Mean image subtraction which subtracts the mean image of the whole training set from each training image.
+2. Ground-truth landmark normalization which normalizes the coordinate *(x, y)* of a specific landmark to the range 0 < x < 1, 0 < y < 1.
 
 # Instructions
 ## Installation
