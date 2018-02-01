@@ -29,12 +29,12 @@ The data processing consists of two parts: 1) data augmentation and 2) preproces
 
 | Dataset | augmentation | # of training images | # of training images after augmentation |
 | ------- | :----------: | :------------------: | :-------------------------------------: |
-| AFLW_FULL | flip + rotation (-5 degrees and +5 degrees)                | 20000 | 60000 |
-|  LFW_NET  | flip + rotation (-5 degrees and +5 degrees) + rotated flip | 10000 | 60000 |                                            
-| MTFL_TEST |                               x                            |   x   |   x   |
-| UMDFaces  |                        no augmentation                     | 317918| 317918|       
+| AFLW_FULL | flip + rotation (-5 and +5 degrees)                                              | 20000 | 60000 |
+|  LFW_NET  | flip + rotation (-5 and +5 degrees) + rotated flip (-5 and +5 degrees)           | 10000 | 60000 |                        
+| MTFL_TEST |                               x                                                  |   x   |   x   |
+| UMDFaces  |                        no augmentation                                           | 317918| 317918|       
 
-Here *rotated flip* means the horizontal flip after rotation, and *MTFL_TEST* dataset is used as the test set only. 
+Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST* dataset is used as the test set only. 
 
 ### Preprocessings
 1. Mean image subtraction which subtracts the mean image of the whole training set from each training image.
