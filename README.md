@@ -42,7 +42,11 @@ Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST
 
 # Instructions
 ## Installation
-This project utilizes convolutional neural network for facial landmark detection and is written under [Caffe](https://github.com/BVLC/caffe) framework. To be specific, we develop training related code in C++ via the **Layer** interface provided by Caffe and write data processing and evaluation related code in Python, this part of Python code is in the **experiments** sub-directory. 
+- git clone https://github.com/JiajianZeng/ContextWithStructure.git
+- cd $CWS_HOME
+- refer [Caffe Installation](http://caffe.berkeleyvision.org/installation.html) to install
+
+Here *$CWS_HOME* means the root directory of the cloned project.
 
 
 
