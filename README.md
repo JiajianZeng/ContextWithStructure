@@ -47,7 +47,7 @@ Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST
 - refer [Caffe Installation](http://caffe.berkeleyvision.org/installation.html) to install
 
 Here *$CWS_HOME* means the root directory of the cloned project.
-## Generate LMDB
+## Training process
 - download the datasets via the Google Drive link provided in the [Download](#download) section.
 ### Generate Training LMDB
 - cd $CWS_HOME/experiments/data_processing
@@ -65,3 +65,12 @@ Besides, we also provide a tool to check whether the generated lmdb data is corr
 
 will recover the first 20 images from the lmdb data, the recovered images can be found under the *image_read_from_lmdb/* folder.
 ### Generate Test LMDB
+- cd $CWS_HOME/experiments/data_processing
+- AFLW_FULL
+  - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix aflw_full_224x224_rgb --is_color True --img_size 224 --num_landmarks 19
+- LFW_NET
+  - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix lfw_net_224x224_rgb --is_color True --img_size 224 --num_landmarks 5
+- MTFL_TEST
+  - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix mtfl_test_224x224_rgb --is_color True --img_size 224 --num_landmarks 5
+- UMDFaces
+  - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix umd_face_224x224_rgb --is_color True --img_size 224 --num_landmarks 19
