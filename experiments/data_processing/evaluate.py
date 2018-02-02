@@ -7,7 +7,7 @@ import caffe
 
 from cnn_util import CNN
 from lmdb_util import read_image_from_lmdb, read_label_from_lmdb
-from util import BBox, draw_landmark_in_cropped_face
+from util import str2bool, BBox, draw_landmark_in_cropped_face
 
 
 template_5_points = \
@@ -250,11 +250,11 @@ def parse_args():
     # print stat info or not
     parser.add_argument('--print_info',
                         help='print stat info or not',
-                        default=True, type=bool)
+                        default=True, type=str2bool)
     # normalized by bounding box width or not
     parser.add_argument('--use_width',
                         help='normalized by bounding box width or not',
-                        default=False, type=bool)
+                        default=False, type=str2bool)
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
