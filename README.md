@@ -47,7 +47,7 @@ Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST
 - refer [Caffe Installation](http://caffe.berkeleyvision.org/installation.html) to install
 
 Here *$CWS_HOME* means the root directory of the cloned project.
-## Training process
+## Training
 - download the datasets via the Google Drive link provided in the [Download](#download) section.
 ### Generate Training LMDB
 - cd $CWS_HOME/experiments/data_processing
@@ -83,3 +83,15 @@ will recover the first 20 images from the lmdb data, the recovered images can be
   - ./build/tools/compute_image_mean ./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_data ./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_mean.binaryproto
 - UMDFaces
   - ./build/tools/compute_image_mean ./experiments/data_processing/dataset/train/umd_face_224x224_rgb_data ./experiments/data_processing/dataset/train/umd_face_224x224_rgb_mean.binaryproto
+
+### Start Training
+- download the pre-trained model for the initialization of the context network [here](https://drive.google.com/open?id=1teX7YfKMoruERTIA_zdlDMMGyHXesUpw).
+- cd $CWS_HOME
+- ./build/tools/caffe train --solver ./experiments/models/$PATH_TO_SOLVER \[--weights $PATH_TO_PRE_TRAINED_MODEL\] --gpu $GPU_ID |& tee ./experiments/logs/$PATH_TO_LOG
+
+Note that the option *--weights* is needed for training models in whom the context network is involved. To investigate the training process in depth, we provide a tool called *log visualization*. For example, the following command
+- python log_vis.py --log ../logs/alexnet_percep_struct_aflw_full_224x224_rgb.log --start 0 --end 100000 --step 5 --loss "euclidean_loss"
+
+will visualize the loss term *euclidean_loss* in the training phase whose iteration is in the range \[0, 100000\]. Find more helpful functionalities by just running 
+- python log_vis.py
+## Evaluation
