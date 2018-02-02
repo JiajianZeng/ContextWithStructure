@@ -56,7 +56,7 @@ Here *$CWS_HOME* means the root directory of the cloned project.
 - LFW_NET
   - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix lfw_net_224x224_rgb --is_color True --img_size 224 --flipping true --rotation true --rotated_flipping true --num_landmarks 5 --rotation_angles 15 --rotation_angles -15
 - UMDFaces
-  - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix umd_face_224x224_rgb --is_color true --img_size 224 --flipping false --rotation false --rotated_flipping false --num_landmarks 19
+  - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix umd_face_224x224_rgb --is_color true --img_size 224 --flipping false --rotation false --rotated_flipping false --num_landmarks 19
 
 Here *$TRAIN_ANNO_FILE* and *$IMG_BASE_DIR* represent the training annotation file and root directory to the images of the corresponding dataset respectively. When generating lmdb data, you can find some visualization results under the *visualization/* folder. And after the processing done, you will find the generated lmdb file under the *dataset/train/* folder. 
 
