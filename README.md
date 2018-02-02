@@ -95,3 +95,12 @@ Note that the option *--weights* is needed for training models in whom the conte
 will visualize the loss term *euclidean_loss* in the training phase whose iteration is in the range \[0, 100000\]. Find more helpful functionalities by just running 
 - python log_vis.py
 ## Evaluation
+- cd $CWS_HOME/experiments/data_processing
+- python ./evaluate.py --lmdb_data ./dataset/test/$TEST_DATA --lmdb_landmark ./dataset/test/$TEST_LANDMARK --lmdb_bbox ./dataset/test/$TEST_BBOX --lmdb_eye_center ./dataset/test/$TEST_EYE_CENTER --mean_file ./dataset/train/$MEAN_IMAGE --network ../models/$DEPLOY_PROTOTXT --caffemodel ../weights/$CAFFE_MODEL --output_layer $OUTPUT_LAYER \[--use_width True --threshold 0.05\]
+
+Note that the option *--use_width True --threshold 0.05* indicates the mean error is normalized by face size (width of the bounding box), and the threshold of failure rate is 5%. Otherwise, the mean error is normalized by bi-ocular distance. As described in our paper, we use bi-ocular distance for the *LFW_NET* and *MTFL_TEST* datasets.
+
+For detailed explanations of different options, just run
+- python ./evaluate.py 
+### Pre-trained Models
+We provide a pre-trained caffe model for the evaluation of the *AFLW_FULL* dataset on alexnet_percep_aflw_full network (the network definition is under the *$CWS_HOME/experiments/models/19_points/alexnet_percep_aflw_full/ folder*). It can be downloaded from [here](). 
