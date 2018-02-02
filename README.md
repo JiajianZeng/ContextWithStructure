@@ -29,8 +29,8 @@ The data processing consists of two parts: 1) data augmentation and 2) preproces
 
 | Dataset | augmentation | # of training images | # of training images after augmentation |
 | ------- | :----------: | :------------------: | :-------------------------------------: |
-| AFLW_FULL | flip + rotation (-5 and +5 degrees)                                              | 20000 | 60000 |
-|  LFW_NET  | flip + rotation (-5 and +5 degrees) + rotated flip (-5 and +5 degrees)           | 10000 | 60000 |                        
+| AFLW_FULL | flip + rotation (-15 and +15 degrees)                                              | 20000 | 60000 |
+|  LFW_NET  | flip + rotation (-15 and +15 degrees) + rotated flip (-15 and +15 degrees)           | 10000 | 60000 | 
 | MTFL_TEST |                               x                                                  |   x   |   x   |
 | UMDFaces  |                        no augmentation                                           | 317918| 317918|       
 
@@ -49,6 +49,19 @@ Here *rotated flip* means the horizontal flip after rotation, and the *MTFL_TEST
 Here *$CWS_HOME* means the root directory of the cloned project.
 ## Generate LMDB
 - download the datasets via the Google Drive link provided in the [Download](#download) section.
+### Generate Training LMDB
+- cd $CWS_HOME/experiments/data_processing
+- AFLW_FULL
+  - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix aflw_full_224x224_rgb --is_color True --img_size 224 --flipping false --rotation true --rotated_flipping false --num_landmarks 19 --rotation_angles 15 --rotation_angles -15
+- LFW_NET
+  - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix lfw_net_224x224_rgb --is_color True --img_size 224 --flipping true --rotation true --rotated_flipping true --num_landmarks 5 --rotation_angles 15 --rotation_angles -15
+- UMDFaces
+  - python generate_lmdb.py --meta_file $TRAIN_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/train/ --lmdb_prefix umd_224x224_rgb --is_color true --img_size 224 --flipping false --rotation false --rotated_flipping false --num_landmarks 19
 
+Here *$TRAIN_ANNO_FILE* and *$IMG_BASE_DIR* represent the training annotation file and root directory to the images of the corresponding dataset respectively. When generating lmdb data, you can find some visualization results under the *visualization/* folder. And after the processing done, you will find the generated lmdb file under the *dataset/train/* folder. 
 
+Besides, we also provide a tool to check whether the generated lmdb data is correct or not, for example, the following command
+- python lmdb_util.py --lmdb_data dataset/train/umd_224x224_rgb_data/ --lmdb_landmark dataset/train/umd_224x224_rgb_landmark/ --num_to_read 20 --save_dir image_read_from_lmdb/ --num_landmarks 19
 
+will recover the first 20 images from the lmdb data, the recovered images can be found under the *image_read_from_lmdb/* folder.
+### Generate Test LMDB
