@@ -74,3 +74,12 @@ will recover the first 20 images from the lmdb data, the recovered images can be
   - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix mtfl_test_224x224_rgb --is_color True --img_size 224 --num_landmarks 5
 - UMDFaces
   - python generate_lmdb.py --test_stage True --meta_file $TEST_ANNO_FILE --img_base_dir $IMG_BASE_DIR --output_dir dataset/test/ --lmdb_prefix umd_face_224x224_rgb --is_color True --img_size 224 --num_landmarks 19
+
+### Compute Mean Image 
+- cd $CWS_HOME
+- AFLW_FULL
+  - ./build/tools/compute_image_mean ./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_data ./experiments/data_processing/dataset/train/aflw_full_224x224_rgb_mean.binaryproto
+- LFW_NET
+  - ./build/tools/compute_image_mean ./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_data ./experiments/data_processing/dataset/train/lfw_net_224x224_rgb_mean.binaryproto
+- UMDFaces
+  - ./build/tools/compute_image_mean ./experiments/data_processing/dataset/train/umd_face_224x224_rgb_data ./experiments/data_processing/dataset/train/umd_face_224x224_rgb_mean.binaryproto
