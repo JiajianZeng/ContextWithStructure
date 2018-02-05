@@ -300,16 +300,16 @@ class SpatialOperation {
   // followed by the current SpatialOperation
   // calculate the receptive field and accumulated stride of the current spatial operation
   void Following(const SpatialOperation<Dtype>& sp) {
+    // update receptive field
+    SetReceptiveFieldW(sp.ReceptiveFieldW() + 
+                       (KernelW() - 1) * sp.AccumStrideW());
+    SetReceptiveFieldH(sp.ReceptiveFieldH() + 
+                       (KernelH() - 1) * sp.AccumStrideH());
     // update accumulated stride
     SetAccumStrideW(sp.AccumStrideW() * 
                     StrideW());
     SetAccumStrideH(sp.AccumStrideH() * 
                     StrideH());
-    // update receptive field
-    SetReceptiveFieldW(sp.ReceptiveFieldW() + 
-                       (KernelW() - 1) * sp.StrideW());
-    SetReceptiveFieldH(sp.ReceptiveFieldH() + 
-                       (KernelH() - 1) * sp.StrideH());
   }
 
  protected:
