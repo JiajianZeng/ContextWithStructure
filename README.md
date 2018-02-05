@@ -103,4 +103,4 @@ Note that the option *--use_width True --threshold 0.05* indicates the mean erro
 For detailed explanations of different options, just run
 - python ./evaluate.py 
 ### Pre-trained Models
-We provide a pre-trained caffe model for the evaluation of the *AFLW_FULL* dataset on alexnet_percep_aflw_full network (the network definition is under the *$CWS_HOME/experiments/models/19_points/alexnet_percep_aflw_full/ folder*). It can be downloaded from [here](). 
+We provide a pre-trained caffe model for the evaluation of the *AFLW_FULL* dataset on alexnet_percep_aflw_full network (the network definition is under the *$CWS_HOME/experiments/models/19_points/alexnet_percep_aflw_full/ folder*). It can be downloaded from [here](https://drive.google.com/open?id=1qEMdAShnYZ8s1RwtXs6vqo77w93tzq3j). 
