@@ -104,3 +104,20 @@ For detailed explanations of different options, just run
 - python ./evaluate.py 
 ### Pre-trained Models
 We provide a pre-trained caffe model for the evaluation of the *AFLW_FULL* dataset on alexnet_percep_aflw_full network (the network definition is under the *$CWS_HOME/experiments/models/19_points/alexnet_percep_aflw_full/ folder*). It can be downloaded from [here](https://drive.google.com/open?id=1qEMdAShnYZ8s1RwtXs6vqo77w93tzq3j). 
+
+# Citation
+If you find ContextWithStructure useful in your research, please consider citing:
+```
+@ARTICLE{8219746, 
+author={J. Zeng and S. Liu and X. Li and D. A. Mahdi and F. Wu and G. Wang}, 
+journal={IEEE Transactions on Image Processing}, 
+title={Deep Context-Sensitive Facial Landmark Detection With Tree-Structured Modeling}, 
+year={2018}, 
+volume={27}, 
+number={5}, 
+pages={2096-2107}, 
+keywords={Context modeling;Face;Feature extraction;Loss measurement;Predictive models;Shape;CNN;Facial landmark detection;context constraint;deep learning;tree-structured modeling}, 
+doi={10.1109/TIP.2017.2784571}, 
+ISSN={1057-7149}, 
+month={May},}
+```
